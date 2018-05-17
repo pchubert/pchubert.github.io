@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>远い理想郷</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://nokehubert.cn/"/>
+  <updated>2018-05-17T02:46:30.130Z</updated>
+  <id>http://nokehubert.cn/</id>
+  
+  <author>
+    <name>nokehubert</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于Centos 7的屏幕亮度设定</title>
+    <link href="http://nokehubert.cn/2018/04/15/%E5%85%B3%E4%BA%8ECentos-7%E7%9A%84%E5%B1%8F%E5%B9%95%E4%BA%AE%E5%BA%A6%E8%AE%BE%E5%AE%9A/"/>
+    <id>http://nokehubert.cn/2018/04/15/关于Centos-7的屏幕亮度设定/</id>
+    <published>2018-04-15T03:08:17.000Z</published>
+    <updated>2018-05-17T02:46:30.130Z</updated>
+    
+    <content type="html"><![CDATA[<p>&emsp;&emsp;在安装CentOS中，尤其是目前7的版本，出现一开机就显示最大亮度，并且在右上角电源选项中并无出现可调节亮度选项，出于练习的目的，而使用CentOS学习linux就很难受（当然是指盯着高亮度的屏幕），笔者为此研究了一晚上，如下文所示，虽然不能完美保证解决问题，甚至在一些情况中实际上并没起到作用，但在某些情况也能起到作用，对于其中的运作机制还是很朦胧，但是会在之后的学习中继续补充。<a id="more"></a><br>先声明本文所能帮助调节亮度的几种情况:<br>&emsp;&emsp;1.针对当前系统 /sys/class/backlight/intel_backlight/brightness存在的条件下<br>&emsp;&emsp;&emsp;效果：可以根据脚本利用命令行或者通过增加电源选项的方式调节（未实机测试）<br>&nbsp;<br>&emsp;&emsp;2.针对当前系统 backlight 下不存在文件的条件下（操作后出现文件夹且允许调节）<br>&emsp;&emsp;&emsp;效果：可以根据脚本利用命令行或者通过增加电源选项的方式调节（已实机测试）<br>&nbsp;<br>&emsp;&emsp;3.针对之前使用“nomodest”命令安装的linux操作系统（已实机测试）<br>&emsp;&emsp;&emsp;效果：可以在开机的时候未切换到独立显卡的阶段下进行亮度调整</p><p>&emsp;&emsp;首先，先谈谈为什么CentOS会出现屏幕亮度无法调节的情况下，可能一开始您也跟笔者一样以为是以为安装了Minimal版或者是DVD版而造成的，但实际情况并非如此。对于一个服务器系统，CentOS 7所针对的是服务器，并非说是针对桌面办公而开发的，这一点也就是您之前使用Linux所感受到的“不友好”的根源，但问题是，这是另外一个层次的问题，对于服务器而言，Linux操作系统是非常优秀的，这是一个可以思考的方面。再者，这跟您的之前安装的配置（包括您的硬件情况）有关，就像上一篇文章《 Win10+CentOS双系统 》中碰见的问题一样，您所需要安装的linux操作系统本身就无法识别到您的某些硬件（比如N卡）。下面也可以放两张图，也补充了上篇文章对于是否是强行使用独显进行CentOS的安装的证明。很明显，图形处理的硬件变更了（当然，您也可以继续怀疑，本文的理解阶段并不深，出现理解的偏差是正常的，但是之后会继续思考下去，并尝试解释机理）。<br>&nbsp;<br><img src="/photos/windows_equipment.jpg"><br><img src="/photos/centos_equipment.png"><br>&emsp;&emsp;对于第一种情况，因为笔者的机子没有是没有那个文件夹的，但是在搜索解决方案的时候找到了方法，没理解错的话是利用脚本来处理的，没有实际操作过，就在这里先附上相关的链接，<a href="http://www.isvee.com/archives/1207" target="_blank" rel="external">三月有晴天的博客</a>。<br>&nbsp;<br>&emsp;&emsp;第二种情况，首先在CentOS中打开终端，“sudo nautilus” 使用root权限打开文件夹，然后修改 /etc/default 目录下的grub文件，把“ GRUB_CMDLINE_LINUX=”” ”  改成 “ GRUB_CMDLINE_LINUX=”acpi_backlight=vendor” ”。<br>&emsp;&emsp;下一步，更新grub,使用“grub2-mkconfig -o /boot/grub2/grub.cfg”，注意在CentOS下的更新grub并不是同Ubuntu常使用的“ update-grub ”，这个操作后，您之前所做的开机引导的相关设置将会重新更新（比如双系统下的Win10的引导等）。解决的方法很简单，跟着之前你处理的步骤重新添加一遍引导所需要处理的措施就好了（坏笑）。终端输入命令“shutdown -r now”，重新开机，即可发现右上角电源选项中多出现了一栏关于屏幕亮度的调节。点进 /sys/class/backlight 将出现新的文件夹（如intel_backlight，电脑不同，出现的文件名也不同）。若此刻您可以通过滑动来控制亮度，那么您此刻已经完成了修改亮度的目的。如果不然，则查看/boot/grub/grub.cfg是否每个启动项都加入了“acpi_backlight=vendor”<br><img src="/photos/centos_dgrub.png"><br>&emsp;&emsp;之后，为了简便对于屏幕亮度的管理，您还可以尝试利用类似于第一种情况的方案进行脚本撰写来简化亮度调节，而对于开机默认值的设定，您可以继续使用root权限下的文件夹对 /etc/rc.local 文件进行改写，进而达到开机亮度就自动调节为您所设定的值的效果，在注释的下面添加<br>“</p><p>#类似的注释<br>echo 50 &gt; /sys/class/backlight/intel_backlight/brightness<br>exit 0<br>”<br>（数值还请自行修改,下图仅为演示截图，非实际情况）<br><img src="/photos/centos_rclocal.png"><br>&emsp;&emsp;第三种情况，也就是笔者的情况，根据第二种方法更改gurb后，在笔者电脑中出现的文件夹为“asus-nb-wmi”（根据各电脑的情况不同而不同），通过对右上角滑条的修改并不能达到调节目的，但是却现该文件夹下的brightness里的值改变了，说明此刻同网上说明的一种情况相同——即右上角滑条调节的仅仅只是影响另外一个数值，而没实际影响到显示出来的brightness，经过观察，发现，对于笔者的华硕笔记本而言，调节的应该为”actual_brightness”（同文件夹下）。<br>&emsp;&emsp;但是尽管使用了“chmod”（root下）对“actual<em>brightness”进行修改权限，所进行的操作（vim,文本编辑器，echo命令等）都无法正常地保存，也就是修改不了，在重新开机后，甚至发现所修改的权限又还原回去了，尽管文件夹的权限都已经修改了一遍，还是没有得出结果。<br>&emsp;&emsp;那么，是不是完全没有办法了呢？</em>(:з」∠)_，倒还有一个办法，就是在您开机时（对于双系统而言，并且是添加命令“nomodest”的安装方式），还未切换到独立显卡时就使用fn+f5或f6功能键（或者是类似的调节亮度的功能键）进行亮度的调节，这样也可以达到对于亮度调节的目的，只是比较遗憾的是，进入CentOS之后就不能再更改其值了。<br>&emsp;&emsp;另外，还值得一提的是，对于网上某些方法的实际效果，比如<a href="https://zhidao.baidu.com/question/1669601963041292267.html" target="_blank" rel="external">旧式命令行通过改变背景颜色达到调节亮度</a>，<a href="https://blog.csdn.net/u014605728/article/details/50401677" target="_blank" rel="external">通过xgamma调节</a>，<a href="http://blog.sina.com.cn/s/blog_a48621570102x2ac.html" target="_blank" rel="external">通过Redshift调节</a>……实际上都并不能很好地解决CentOS的亮度调节问题（效果几乎看不出来，或者是压根没起作用），CentOS还是那样一个比较保守的系统呀，2233。<br>&emsp;&emsp;说到这里，其实，很遗憾，笔者也没实际地解决该问题，但如之前所说，这只是尝试性地提供一些思路，毕竟网上安装Linux碰见类似的问题还是蛮多的，而相关的解决措施又千篇一律，emmm……这里就不吐槽了，可惜目前笔者在CentOS 7上的对shadowsocks客户端的处理还没成功，没办法连上自己的服务端，碍于用手机查或者换系统查麻烦就暂时没想要继续查下去，不然还是想翻翻，接着做到之前第一种方法所能达到的效果，达到脚本控制来在CentOS内完成操作亮度。不过，这篇文章也会慢慢更新，之后对操作系统和linux有了更深层次的理解后，会重新更新这篇文章，才疏学浅，还请见谅。</p><p><hr><br>&emsp;&emsp;接下来说明一下关于本文涉及的内容，我需要对引用的的内容（包括思想，方法等）对这些朋友表示感谢，也请看官保持平和的心态，并对这些“隐藏的作者”表示尊重。再次郑重说明，本文引用到的内容，绝无恶意，本文观点仅提供思路，个人观点比重大，不保证完美解决，还望理解！由于是个人的文章，希望看官不要随意转载至您任何将要发表的文章中，或者征求笔者同意，引用的内容还请标明出处，还望理解。另外希望看官在遇到各个情况的时候不要心慌，灵活百度，笔者写的不一定对，也请您尽量抱以怀疑的心态去看待，感谢！<br>&emsp;&emsp;最后，文中所参考的内容有：<br><br>&emsp;&emsp;<a href="http://tieba.baidu.com/p/2741231799?red_tag=k0996231110" target="_blank" rel="external">ubuntu吧对于屏幕亮度调节的讨论</a><br>&emsp;&emsp;<a href="https://blog.csdn.net/yu132563/article/details/76567265" target="_blank" rel="external">Innerpeace_yu的CSDN博客</a><br>&emsp;&emsp;<a href="http://www.isvee.com/archives/1207" target="_blank" rel="external">三月有晴天的博客</a><br>&emsp;&emsp;<a href="https://zhidao.baidu.com/question/1669601963041292267.html" target="_blank" rel="external">百度知道中对于旧式命令调节亮度的方法</a><br>&emsp;&emsp;<a href="https://blog.csdn.net/u014605728/article/details/50401677" target="_blank" rel="external">沉沦风帆的CSDN博客</a><br>&emsp;&emsp;<a href="http://blog.sina.com.cn/s/blog_a48621570102x2ac.html" target="_blank" rel="external">金水成流的博客</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&amp;emsp;&amp;emsp;在安装CentOS中，尤其是目前7的版本，出现一开机就显示最大亮度，并且在右上角电源选项中并无出现可调节亮度选项，出于练习的目的，而使用CentOS学习linux就很难受（当然是指盯着高亮度的屏幕），笔者为此研究了一晚上，如下文所示，虽然不能完美保证解决问题，甚至在一些情况中实际上并没起到作用，但在某些情况也能起到作用，对于其中的运作机制还是很朦胧，但是会在之后的学习中继续补充。
+    
+    </summary>
+    
+    
+      <category term="linux" scheme="http://nokehubert.cn/tags/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Win10+CentOS 双系统</title>
+    <link href="http://nokehubert.cn/2018/04/02/Win10-CentOS-%E5%8F%8C%E7%B3%BB%E7%BB%9F/"/>
+    <id>http://nokehubert.cn/2018/04/02/Win10-CentOS-双系统/</id>
+    <published>2018-04-02T15:42:20.000Z</published>
+    <updated>2018-05-17T02:44:35.036Z</updated>
+    
+    <content type="html"><![CDATA[<p>&emsp;&emsp;首先，写这篇文章主要是为了让心有余力想学习linux的朋友更快地完成linux的部署（以win10+CentOS7双系统为例），在看本篇文章前还请自行了解下Linux分区以及系统开机的引导（BIOS,MBR,URFI,GPT……）等相关的知识，并做好多次安装，甚至是不小心把自己的数据全部清空的心理准备。<a id="more"></a><br>&emsp;&emsp;那，接下去看你的文章还能有什么意义？看官请别着急，事实就是如此，linux并不是简单到随便就能够安装妥善的东西（当然您硬要是说unbuntu在虚拟机上只需要几步即可，那我也不能拿很好的言辞去反驳您）。个人是蛮喜欢虚拟机的简便性的，足够完美的仿真，但是有些需要学习的东西就是在方便你的同时就会让您忽略掉很多细节，可以很明确地跟您说，本人也装了N次失败，原因很简单，对概念的不清晰，也就是不懂，一夜的苦等，一早上的煎熬，终于在第二天中午部署完成，并做好了win10的引导（虽然目前重启并没有完全调整好），本篇文章是针对实机安装win10+CentOS而言的，不同版本不同方式将导致处理的方式有很大的区别，这点还请务必多注意。<br>&emsp;&emsp;好，废话不多说了，那么就直接开始吧。<br>&emsp;&emsp;敢想象想装双系统的朋友之前都已经拥有了一套系统，如果您在之前安装的是linux系列或者是其他系统的，建议你可以参考一下其他的教程，或者是将本篇文章作为可能性继续阅读，如果是Windows系列的，请您耐心看下去。本人电脑安装的win10，为此，可以很方便地进行接下来的操作。<br><img src="/photos/centos_website.jpg"><br>&emsp;&emsp;首先，您最好能拥有两个8G以上的U盘，一个作为CentOS的刻录盘，一个作为Windows的pe盘。先从CentOS的官网上下载你所需要的镜像文件（iso文件），至这篇文章书写时，为CentOS-7-?-1708的包，大概分为三类，DVD（4.21G）,Evething（8.09G）,Minimal（792MB）三种，DVD版一般情况下作为练习机就已经很够了，Evething,Minimal字面意思，即完全版和轻小版，本人选择的是DVD版，客观因素，我只有一个8G金士顿U盘闲出来。各镜像站的下载速度各有千秋，但不属于本篇文章的讨论范围，这里就不详说。<br>&emsp;&emsp;接下来，你需要安装一款合适的启动U盘处理软件（这里以UltraISO为例，后面的操作也是以该软件的操作说明），在处理软件中打开您刚刚下载的iso文件，启动–&gt;写入硬盘映像，确保映像文件选中了您的U盘，写入方式改为USB-HDD+,隐藏启动分区选择“无”，因为做启动U盘的话，跑不了要格式化U盘，操作前请将有用的数据备份，虽然过程中是自动格式化，但保险的话可以自己格式化，左下角满足你的需求，格式完成仅需要几分钟，因电脑而异，完成后，继续点击“写入”，这个过程就看你的U盘的速度（2.0/3.0）和你的电脑了，本人笔记本上也跑了快20来分钟才刻录完成。完成后，直接退出软件即可，至此，您的CentOS启动U盘制作完毕。（相关的启动U盘制作软件有很多，甚至可以避免后面要说的问题，时间原因，就不展开了）<br><img src="/photos/iso_use.jpg"><br>&emsp;&emsp;接下来，要安装系统肯定要有充足的空间，考虑到练习机可能要有一段时间折腾，本人就空出了50G左右的空间。在您的“此电脑”或者是“我的电脑”右键唤出菜单，点击管理，接下来选中存储-磁盘管理，选择您空出空间的磁盘（当然是逻辑分区部分），右键-压缩卷，唤出压缩界面，会提示您可用的压缩空间量，这里只是展示，您需要选择您所想要您CentOS系统所应拥有的存储量大小，确认无误之后，点击压缩，根据电脑情况和您选择的压缩卷大小可能会出现长时间鼠标都在转圈，也就是长时间等待的情况，这点请放心，是正常的，完成后会发现出现第一张图中可用空间类似的绿色区段，至此，您在Windows下的准备基本达成。（提醒您在之后的引导处理中可能会用到另一块pe盘，也是需要在Windows下处理的，即之前所描述的第二块U盘，至于操作顺序，看个人理解，先别急着安装系统，可以先浏览一遍后面的内容）<br><img src="/photos/manager.jpg"><br><img src="/photos/free_space.jpg"><br>&emsp;&emsp;再接下来，请重启您的系统，根据您的电脑情况调出BIOS，本人是华硕飞行堡垒，在LOGO消失前按着F2即可，当然这里还会出现bios版本不同以至于操作方式不同的问题，这点还请您见谅，本人学识有限，且手头目前只有一台笔记本。根据菜单的提示，或者是网上的BIOS教程进行操作，有两种方式可以继续下去，一种，直接通过更改启动项顺序，即在Boot栏这里更改，选中您的linux启动U盘，F10保存退出，接下来看见您的启动U盘的安装界面即说明这种方式是允许的（备注，此种方式在本人的电脑中是默认UEFI的启动方式，当然也可以关闭UEFI启动，详情请参见百度）。第二种就是在Save&amp;Exit栏，通过直接选择启动方式（本人是这么理解的，当然这点您可以怀疑）来进行选择启动项，这里可以选择两种方式UEFI方式，非UEFI直接MBR引导的方式，由于本人磁盘是NTFS的文件系统，当然是不抱以使用UEFI+GPT方式进行CentOS安装的心态的，故此，在这里选择非UEFI方式的启动U盘方式，即没有UEFI前缀的选项，当然其他启动U盘制作软件也可以直接拥有USB-HDD前缀的启动方式于Boot栏中可供选择，这里因为没有具体实操过先不提，选择过程中您可能会碰到很多问题，还请妥善使用百度。<br><img src="/photos/baidu_bios.jpg"><br>&emsp;&emsp;看到类似于文本下面的图，您可以认为您的启动U盘成功被引导了，并使您的电脑成功进入了“除错模式”。首先先解释三项的含义，分别是以正常方式安装CentOS7,以救援CentOS系统方式安装，以执行记忆体测试方式。UEFI启动模式下，您所需要的操作是按下“Tab”键，调出下面的字段，直接删除“LABEL=CentOS\x207\x20x86_64 rd.live.check”，并输入“ linux dd”替换，回车，接下来就可以看到下面第三张图的情况，注意观察LABEL下的标签名，有一个即为您在格式化U盘时所定义的U盘名，再记录下DEVICE它所对应的位置，即文件名根据个人的电脑不同这个参数是不同的。重启电脑，再次执行前面的步骤，在“除错模式”下选择第一项，按下“Tab”,更改“LABEL=CentOS\x207\x20x86_64 rd.live.check”类似的在“hd:”后面的字段（quiet可以保留）为“/dev/sdc4”，这里的“sdc4”是本人在之前的操作中获取的U盘位置，即在linux下的文件名，请您根据您之前的信息填入，在quiet前也可以添加其他的语句，例如检查的相关语句等，当然这里不说明下去，完成后“Enter”即可。而对本人电脑可以成功安装的方式的话即是选择非UEFI启动，直接进入另外一个类似的“除错模式”的相关界面，用“e”弹出类似于刚才所说的字段，同理可以修改相应的参数，获取自己U盘的文件名（这里是用”ctrl+x”执行），并同理修改为“/dev/sdc4”（sdc4替换为您的U盘的文件名），“ctrl+x”。<br><img src="/photos/centos_set_up.jpg"><br><img src="/photos/centos_set_up2.png"><br><img src="/photos/centos_set_up3.png"><br>&emsp;&emsp;再后面，会出现很多OK和其他字符串，等待片刻即可，至于在此遇到后面这张图类似的情况，并且长时间卡在这里甚至提示您，x安装界面启动失败，提供给您很多选项并等待您选择（其实也就是文本安装界面）的情况的话，网上出现这样的情况也是蛮多的，本人之前也是卡在这里度过了一个晚上，然后在CentOS贴吧中看到了类似问题的可能原因和处理手段，仅供参考，这点还请原谅。出现的原因，很可能两种，您的启动U盘部分文件损坏，这种说法可能性很小，但基于如果长时间没有在文字安装界面中做出选择的话，会报内核出现严重BUG的错，这里判断有可能，第二种，相对第一种可能性大，该版本的linux内核无法识别出您的某些设备（例如独显），导致图形安装界面无法正常启动。解决的方式对症下药，第一种情况尝试着重新刻录U盘即可，如果之前有误操作的话，并影响到原来的空闲空间，而且在后面的安装过程中提示无空闲空间的话，可以在原本空闲空间的位置上新建卷再删除卷（等于做了一次格式化），第二种情况只要在“/dev/sdc4”（sdc4对应您的U盘文件名）后加上“ nomodeset”即可（目前本人的理解是强行在集显下运行图形界面安装），再强调一次，各个电脑出现的情况都是很针对性的，碰见问题多问问别人或者自行百度，这里给的观点都仅仅是个人观点，仅供参考，学疏才浅，还请见谅。<br><img src="/photos/centos_error.jpg"><br>&emsp;&emsp;等待之后，便是和善很多的CentOS图形安装界面了，拖动滚动条直至底部，选择中文，右侧细选简繁体，点击继续。<br><img src="/photos/centos_language.jpg"><br>&emsp;&emsp;如本段话底下示意图，系统会为您设置好您的日期时间，键盘配置，语言支持，您也可以继续点击进入并完成修改。<br><img src="/photos/centos_set.jpg"><br>&emsp;&emsp;“安装来源”这里设置“自动检测到的安装软体”（USB安装而言，其他方式如光盘请参看其他教程）。<br><img src="/photos/centos_form.jpg"><br>&emsp;&emsp;软体选择，选择方式由用户自行考量，若需要图形界面，可以选择“含有GUI的伺服器”（预载GNOME），或是直接选择“GNOME桌面环境”，或是选择另外一套图形界面“KDE Plasma Workspaces”，这里本人按照片选框选择。<br><img src="/photos/centos_software.jpg"><br>&emsp;&emsp;安装目的地，这里是我们进行磁盘分配的地方，之前足足50G大小的空闲空间就是打算用在这里的。在显示“本机标准磁盘”的下方将会看到你设备的磁盘分布情况，有无可用的空间一目了然（后面都有备注说明，如果您方才生成以50G大小的空闲空间的话，这里您可以正好在这找到一项空闲那么大的）。因为是练习机，当然少不了linux下对磁盘分配情况的熟悉，这里选“我要配置分区”，点击左上角“完成”，以下的分区引用自鸟哥教程中的部分细节，仅供参考，这里也说明在此处引用绝无恶意，只是希望这篇文章能够让想装机的朋友更加轻松，附上<a href="http://linux.vbird.org/linux_basic/0157installcentos7.php" target="_blank" rel="external">鸟哥繁体站链接</a><br><img src="/photos/centos_partition.jpg"><br>&emsp;&emsp;这里可以稍微介绍的是，装置类型方面，标准分割区是我们平常所见的系统为我们进行设定磁盘大小的方式，LVM则是一种可以弹性增加/消减档案容量的设定，LVM紧张供应则是LVM的进阶版，运行情况有所不同这里不展开说明。档案系统方面，主要由ext2/ext3/ext4,swap,BIOS Boot,xfs,vfat五种。ext系列是较为早期的档案系统类型，对于系统复原比较迅速。swap为磁碟模拟成为记忆体，由于不使用目录树的挂载，swap不需要指定挂载点（右侧栏可以体现），BIOS Boot则是GPT会用到的项目,MBR分割的朋友可以不用管。xfs则是目前CentOS预设的档案系统，对大容量的磁盘管理好，格式化速度快，适合如今随便上TB的磁盘环境，。vfat为linux和window所同时支持的档案系统类型，可以允许资料的交换。<br>&emsp;&emsp;首先，我们点击“+”，创建BIOS boot分区，挂载点是“biosboot”,大小设定为“2M”，点击新增挂载点后，可以看到右侧显示出该分区目前的情况，并可以做到修改（但是本人在这出现一个情况，一开始选择容量1024KiB，结果后面更改不了，虽然并不需要使用到这个分区），装置类型选择标准分割区，档案系统BIOS Boot。<br><img src="/photos/centos_biosboot.jpg"><br>&emsp;&emsp;建立”boot”挂载点档案系统，容量设定1024M，装置类型，档案系统保持不变。<br>&emsp;&emsp;同理，加入新的挂载点“/”，即根目录，容量容量设定为10G，装置类型选择LVM，档案系统xfs，点击右侧的“Volume Group”向下数第二行的“Moedify”，进入下图界面，1号箭头处更改为固定，后面设定为30G，并储存，这一步是为了不使用完50G容量，因为作为练习机，拥有空闲空间可以方便之后的学习。<br><img src="/photos/centos_capacity.jpg"><br>&emsp;&emsp;下一步新增“/home”挂载点，容量设定为5G，同样装置类型设定为LVM，档案系统设定为xfs，“更新设定值”。<br>&emsp;&emsp;加入“swap”，容量设定为1G，一般建议是记忆体的两倍大小，装置类型设定为LVM，档案系统设定为swap。<br>&emsp;&emsp;最后详细检查一遍之前的设定没有问题之后点击左上方的“完成”，出现提示框，确认无误后“接受更改”，若是下方曾出现过黄色引导框提醒的话说明分配存在问题，这里的情况因人而异，请仔细检查，或者自行百度查看自己的解决措施。<br><img src="/photos/centos_check.jpg"><br>&emsp;&emsp;KDMUP,该项目会因linux核心出现情况而在记忆体记录下发生的当即事件，主要是用于除错，可以自行判断是否开启。<br><img src="/photos/centos_KDMUP.jpg"><br>&emsp;&emsp;网络&amp;主机名称，这里可以看到设备的网卡的特殊代号，右下角设定可以进行IP设定，但因为本人使用的是手机热点，并且为了避免麻烦，省去多余的操作，不做更改（图片因为在CentOS内，并没有相关的截图，所以使用了鸟哥网站的截图）。<br><img src="/photos/centos_net_set.jpg"><br>&emsp;&emsp;当您看到如下界面的时候说明一切都已准备就绪，点击右下角“开始安装”，进入到“组态”菜单，这里可以进行对ROOT密码，及在安装的同时创建访问的一般用户，ROOT即Windows下的管理员，设定一般用户则是方便我们平常的使用，因为linux系统对使用者的自由度较高（甚至可以自己杀死自己），所以拥有一个一般类型的账户可以减少您在折腾系统时所出现的事故可能。由于linux对安全性能的要求较高，如果您的root密码安全度不高的话，将可能要求您二次点击相关的完成按钮，故建议您一开始就设定安全度较高的密码，也确实有利于CentOS的管理。用户建立方面，密码安全度相较之低，可以勾选“让这位成为管理员”，之所以勾选是因为这样可以避免您在忘记root密码的情况下进行root管理，设定完成后，等待下方的进度条走完，大概需要10-15分钟左右，因各电脑情况而异，完成后点击重新开机即可。<br><img src="/photos/centos_evething_over.jpg"><br><img src="/photos/centos_user.jpg"><br>&emsp;&emsp;因之前选择UEFI或者选择非UEFI这里可能会出现三种情况，一种是直接为CentOS的，一种是直接就具备了引导，可以选择CentOS或者是Windows的，这两种同学可以跳过这一段。最后一种是重启后直接是Windows 10，那么这种情况的同学您需要在Windows下载启动项修改工具“EasyBCD”，这里资源就请自行百度了，资源遍地走，我一般是这么认为的，基本上您想翻阅的资源在网上都有，只是您不想抽出您宝贵的时间而已.进入界面后选择“添加新条目”，选择“linux/BCD”一栏，然后改变类型为“GURB2”，为您的启动项设定一个想要的名字，驱动器默认选择“自动定位和加载”即可，最后点击“添加条目”，在编辑引导菜单处设定您的启动项的默认项（即不进行操作的情况下，几秒之后由系统为您选择开机的系统），完成设定后，右下角“保存设定”。重启即可选择进入CentOS。这里建议Windows下多进行一步操作，即关闭“快速开机”，否则后面双系统引导后可能出现无限重启，无法关机的情况。<br><img src="/photos/EasyBCD.jpg"><br>&emsp;&emsp;成功启动了CentOS之后，因为是首次安装，将会出现“初始设定”样的界面，如之前在图形安装界面中操作的那样，直接选中“授权资讯”，勾选跳出的界面左下角中“我接受此授权协议”即可，确认完之后就会弹出CentOS登录账户的界面，根据您之前设定的账户信息填写即可，登录之后您就可以认为您成功完成了CenOS的安装了，下面挂上当时手机拍摄的两张图片。<br><img src="/photos/centos_start.jpg"><br><img src="/photos/centos_introduce.jpg"><br>&emsp;&emsp;当然这样也还没算完，您要是想在您开机的时候完成系统的切换，即双系统的话，您还需要进行进一步的操作，当然因为安装方式的不同可能您已经完成了这样的切换，那么您就可以轻松地阅读接下来的内容了。<br>&emsp;&emsp;CentOS下是利用grub来管理启动项的，所以接下来的操作无非就是更改grub的相应数值，有两种方式，笔者只尝试了第一种，第二种因为当时没有意识到硬盘在不同电脑的识别情况，以及之前Win10系统部署不是本人亲手操作的也有点因素，所以第二种方式一开始是无果的。第一种，文件修改的方式，右键打开您的终端（这一部分就请您自己去了解了），输入“sudo nautilus”，即以root身份打开文件，会需要您输入一遍密码，这样可以保证你可以打开boot目录下的grub.cfg文件。您需要先找到这个路径——“/boot/grub2/grub.cfg”，文件打开后您需要找到“### BEGIN /etc/grub.d/30_os-prober ###”这一行，在后面添加<br>menuentry ‘Windows 10’ {<br>insmod ntfs<br>set root=(hd0,1)<br>chainloader +1<br>}<br>&emsp;&emsp;这里的“Windows 10”是您在启动选择界面中会看见的值，”set root=(hd0,1)”有点像将引导加载功能转移给其他的loader一样的作用，“hd0”代表您电脑上的第一块硬盘，但是笔者其实是“hd1”，也就是第二块，所以当时一直没找到原因，后来一样在开机选择界面中用“e”调出之前所的字段，多次更改才发现原因，这里应该是根据您的windows系统是在电脑哪块硬盘的启动扇区（也就是其他loader的所在）内引导的而确定的，“1”则是一般情况下您系统盘的位置（注意这里是从1开始，一般我们把C盘作为系统盘），保存并重启，您就可以发现在原来的启动选择中除了正常启动（一般是第一项）和应急启动（一般是第二项）多了”Window 10”的启动项，如果您不选择，则是由系统默认选择CentOS的正常启动方式，您需要的是尝试选择”Window 10”的启动项，如果出错，请倒回去检查grub.cfg文件中的内容或是像笔者之前说的那样直接在启动选择界面中按“e“更改数值，“ctrl+x”运行。如果成功，恭喜，您已经成功引导进入到了“Window 10”，但是需要检查在“Window 10” 下是否能够正常关机，不能则关闭“快速开机”，再启动的时候是否会出现之前您所看到的MBR启动选择的界面，如果不能，同理用之前说CentOS刚安装完之后启动只有Window10的方法解决（即EasyBCD）。<br>&emsp;&emsp;如果您想更改默认启动项为“Window 10”，那么您还需要进行下一步操作。修改引导顺序，首先在Centos中右键唤出终端，先执行“su”进入root模式，会要求您输入root密码，接下来执行“cat /boot/grub2/grub.cfg |grep menuentry”，可以看到你拥有几个内核，会发现之前设定的“Window 10”显示在这里，接下来执行“ grub2-set-default “Window 10” ”（为了看得清楚我在命令两侧各多打了一次空格），再用“grub2-editenv list”命令检查您是否已经修改成功，失败请重复之前的操作，成功将显示“saved_entry=Window 10”，重启检查效果即可。<br>&emsp;&emsp;<a href="https://blog.csdn.net/q260864798/article/details/53502242" target="_blank" rel="external">方法二请点击这里</a><br>&emsp;&emsp;至此，您的“Win10+CentOS”双系统就安装完毕了！恭喜！也祝您在linux里玩得愉快！<br><img src="/photos/centos_last.jpg"></p><p><hr><br>&emsp;&emsp;接下来说明一下关于本文涉及的内容，无可厚非，这篇文章是集合了很多人在网上的教程的观点而形成的（本人也初学linux而已，做不到完全由自己说明），我需要对引用的的内容（包括思想，图片等）对这些朋友表示感谢，也请看官保持平和的心态，并对这些“隐藏的作者”表示尊重。再次郑重说明，本文引用到的内容，绝无恶意，并且笔者也是以想要教会人的心态写这篇文章的，个人观点比重也很大，还望理解！由于是个人的文章，希望看官不要随意转载至您任何将要发表的文章中，或者征求笔者同意，引用的内容还请标明出处，还望理解。另外希望看官在遇到各个情况的时候不要心慌，灵活百度，笔者写的不一定对，也请您尽量抱以怀疑的心态去看待，感谢！<br>&emsp;&emsp;最后，文中所参考的内容有：<br><br><a href="https://www.linuxidc.com/Linux/2016-06/132051p4.htm" target="_blank" rel="external">linux公社&emsp;&emsp;&emsp;https://www.linuxidc.com/Linux/2016-06/132051p4.htm</a><br><a href="https://blog.csdn.net/flyer1011/article/details/78185509" target="_blank" rel="external">CSDN博客&emsp;&emsp;&emsp;https://blog.csdn.net/flyer1011/article/details/78185509</a><br><a href="http://linux.vbird.org/linux_basic/0157installcentos7.php" target="_blank" rel="external">鸟哥的Linux私房菜&emsp;&emsp;&emsp;http://linux.vbird.org/linux_basic/0157installcentos7.php</a><br><a href="https://blog.csdn.net/q260864798/article/details/53439578" target="_blank" rel="external">CSDN博客&emsp;&emsp;&emsp;https://blog.csdn.net/q260864798/article/details/53439578</a><br><a href="https://blog.csdn.net/q260864798/article/details/53502242" target="_blank" rel="external">CSDN博客&emsp;&emsp;&emsp;https://blog.csdn.net/q260864798/article/details/53502242</a><br><a href="http://tieba.baidu.com/p/4858208000?pn=5" target="_blank" rel="external">百度贴吧156楼&emsp;&emsp;&emsp;http://tieba.baidu.com/p/4858208000?pn=5</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&amp;emsp;&amp;emsp;首先，写这篇文章主要是为了让心有余力想学习linux的朋友更快地完成linux的部署（以win10+CentOS7双系统为例），在看本篇文章前还请自行了解下Linux分区以及系统开机的引导（BIOS,MBR,URFI,GPT……）等相关的知识，并做好多次安装，甚至是不小心把自己的数据全部清空的心理准备。
+    
+    </summary>
+    
+    
+      <category term="linux" scheme="http://nokehubert.cn/tags/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>One I can do it</title>
+    <link href="http://nokehubert.cn/2018/03/15/One-I-can-do-it/"/>
+    <id>http://nokehubert.cn/2018/03/15/One-I-can-do-it/</id>
+    <published>2018-03-14T16:15:00.000Z</published>
+    <updated>2018-05-17T02:43:35.457Z</updated>
+    
+    <content type="html"><![CDATA[<p>&emsp;&emsp;转眼，进入大学以来已经有两年了，没有过多地去考虑东西，从冷清这博客以来，心存侥幸，一味地去追求一些实际上空荡荡的事情。而这对自己，对家人上来说，都总有种过意不去的感觉，于是，便打算（再一次）认真地对待自己的将来了。先不说实际上内心还是充斥着毫无方向感的迷茫，这次，我要接着做下去，做得比原来精，比原来好。<a id="more"></a><br>&emsp;&emsp;我不清楚是不是大多数人都在大学生活中有自己的学习定位，但是当我触碰到一些东西的时候，我往往是三天打鱼，两天晒网式的学习，但是，这也是基于在我想利用自己的时间去做一些东西的情况下的。虽然不值得炫耀，但我也在努力地变强，只是太过发散的学习让我在方方面面都表现得不如别人，当然，无可否认，我自己本身肯定也存在着问题……<br>&emsp;&emsp;我是以游戏独立开发者的角度上出发的，我至今也没能够舍弃掉这个目标。是，我也曾被很好的朋友劝导过，其实，我所依托的这个理由实在太过虚假，是个男生，爱玩游戏，基本上都能够说出，自己想要在将来从事游戏行业的想法。我对这个问题思考了很久，因为害怕，自己也许真的是从出发点就开始错了。但是，在我参加一个创新比赛的时候，当我和我的队长苦苦冥思在安卓中如何实现各种事件的响应的时候，当我在得知最后能够做出的反馈效果不能符合预想一个人爬上楼底，望着那深不见底的楼梯的时候，当我在比赛最后两天的晚上咬下牙在7，8度的通宵自习室咳着写完我自己那一份的代码的时候，我知道，我是真的很希望，很希望做出一个游戏的。<br>&emsp;&emsp;尽管你可以说我玩得游戏比别人少，操作技术也不好，甚至就连唯一做出来的安卓小游戏连游戏性都模糊不清，但我很清楚那就是我现在想继续学习下去的最根源的想法了。<br>&emsp;&emsp;有位对我很好的学长，告诫我，在一个努力了比较久的方面上容易成功。<br>&emsp;&emsp;我也记得他曾经把自己告诫自己的话也同我分享。<br>&emsp;&emsp;我是真的很感谢他的，没有这些鼓励，我现在大概也就只是恍恍惚惚在过着大学的日子罢了，尽管我确实掌握着一些别人不会的小技能，但是，针对于具体的每一项，我确实是没有一项强过花时间在上面的人的。<br>&emsp;&emsp;游戏开发，前端，安卓开发，这些是我目前想清楚的方向，就实际而言，你也许会说情况根本没有变，但是，我自己知道，我已经可以做到一些方向性的学习了，我不会放弃前进，我也不会放弃自己,因为知道，还有人为我担忧，还有人愿意为我露出微笑，我自己本身也还确确实实地存在于这个世界。<br>&emsp;&emsp;加油，我自己！</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&amp;emsp;&amp;emsp;转眼，进入大学以来已经有两年了，没有过多地去考虑东西，从冷清这博客以来，心存侥幸，一味地去追求一些实际上空荡荡的事情。而这对自己，对家人上来说，都总有种过意不去的感觉，于是，便打算（再一次）认真地对待自己的将来了。先不说实际上内心还是充斥着毫无方向感的迷茫，这次，我要接着做下去，做得比原来精，比原来好。
+    
+    </summary>
+    
+    
+      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>These days</title>
+    <link href="http://nokehubert.cn/2017/10/19/These-days/"/>
+    <id>http://nokehubert.cn/2017/10/19/These-days/</id>
+    <published>2017-10-18T16:27:33.000Z</published>
+    <updated>2017-10-22T15:24:44.719Z</updated>
+    
+    <content type="html"><![CDATA[<p>From last time’s update is another two days later,I feel  very tired now because I had to do many things which seem to be useless,what’s worse,they are so fussy.But the lives is it.<a id="more"></a><br>I also continue to study HTML 5.I meet a program that I must try to understand some codes in css when I haven’t learn it.One side,I hope I can master HTML 5 quickly and make sure my foundation,on the other side,I should think about the idea of cross learning which means I will spend more time to learn about other languages.<br>I seem to be in hot water and it feels so bad.<br>But I still think the design of a webside is fantastic just like I find a tag’s nature can let me make a picture become the client image mapping.I succeed to make a paint link to the other three photos and I can visit they freely only need I click the true part of the first paint.<br>I think the timetable is need for me now.Not working,not learnning or not continuing my study after class are all I don’t want it to be.So I ought to think about how to balance my time to make my time more efficient.<br>Time is still running away and I can’t give up in this time which may be the last one.</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;From last time’s update is another two days later,I feel  very tired now because I had to do many things which seem to be useless,what’s worse,they are so fussy.But the lives is it.
+    
+    </summary>
+    
+    
+      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Low poly&#39;s learning</title>
+    <link href="http://nokehubert.cn/2017/10/17/Low-poly-s-learning/"/>
+    <id>http://nokehubert.cn/2017/10/17/Low-poly-s-learning/</id>
+    <published>2017-10-16T17:11:47.000Z</published>
+    <updated>2017-10-16T17:55:13.497Z</updated>
+    
+    <content type="html"><![CDATA[<p>It is the same as ever,I update this post at night.What I have done today is  learnning some about the design of low ploy and continuing to study HTML 5.<br>At first,let me describe my tool which is be used to model,it is C4D which is popular with the young designers now.It is a software so powerful that many new creative demo animations are the works of it.<a id="more"></a><br>Maybe you want to ask me why I want to learn low ploy today,only I can say is it is now what I need for work.<br>Of course,I am also a beginner of C4D now,but I find it is not bad to create a work which one is the style of low ploy if I only make the models at my stage.And there is a screenshot of progress though I haven’t finish it.<br><img src="/photos/c4d_test0.jpg"><br>About HTML 5,I learn some about the tags of style,link and script mainly.Because I haven’t learnt about the css,I don’t master it at so little time.And I restart my study of HTTP message though I used to ignore it.<br>This is all today.Good night!</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;It is the same as ever,I update this post at night.What I have done today is  learnning some about the design of low ploy and continuing to study HTML 5.&lt;br&gt;At first,let me describe my tool which is be used to model,it is C4D which is popular with the young designers now.It is a software so powerful that many new creative demo animations are the works of it.
+    
+    </summary>
+    
+    
+      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>About this time&#39;s update</title>
+    <link href="http://nokehubert.cn/2017/10/15/About-this-time-s-update/"/>
+    <id>http://nokehubert.cn/2017/10/15/About-this-time-s-update/</id>
+    <published>2017-10-14T17:22:00.000Z</published>
+    <updated>2017-10-14T17:37:19.028Z</updated>
+    
+    <content type="html"><![CDATA[<p><hr><br><a id="more"></a><br>–New three pages–photos，music，sai_lm<br><br><br>–Update all posts’ tags–<br><br><br>–Add two new photos to sai_lm–<br><br><br>–Share a new music in music–<br><br><br><em>2017_10_15</em></p><hr>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;hr&gt;&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="Dev Log" scheme="http://nokehubert.cn/tags/Dev-Log/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Test 2</title>
+    <link href="http://nokehubert.cn/2017/10/13/Test-2/"/>
+    <id>http://nokehubert.cn/2017/10/13/Test-2/</id>
+    <published>2017-10-13T12:22:32.000Z</published>
+    <updated>2017-10-16T18:08:42.183Z</updated>
+    
+    <content type="html"><![CDATA[<p>This post is used to test something.And I use HTML 5 in main to finish it which I learn recently.To my surprise,I get a fantastic think in this progress and I want to make it in  the future.</p><p><hr><br><a id="more"></a></p><p><hr></p><p></p><h1>catalog</h1><br><br><a href="#1"><strong>1.show a picture</strong></a><br><br><a href="#2"><strong>2.play a music</strong></a><br><br><a href="#3"><strong>3.paly a movie</strong></a><p></p><p><hr></p><p><hr><br><em style="text-align:center;"><div id="1">Here I want to show a photo from pisiv.</div></em><br><img src="\photos\test_photo.jpg"></p><p><hr></p><p><hr><br><em style="text-align:center;"><div id="2">And I want to play a music in next.</div></em></p><p><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=438981791&auto=0&height=66"><br></iframe></p><p><hr></p><p><hr><br><em style="text-align:center;"><div id="3">In the last,I want to play a video of bilibili</div></em></p><p></p><p>    <embed height="452" width="544" quality="high" allowfullscreen="true" type="application/x-shockwave-flash" src="http://static.hdslb.com/miniloader.swf" flashvars="aid=4599495&#038;page=1&#038;autostart=false" pluginspage="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash"></p><br><strong><a href="https://www.bilibili.com/video/av4599495/?from=search&seid=10303644515580252276" target="_blank" rel="external">Transfer gate<br></a></strong><br><em>注：本视频的展出，仅为了演示效果，作者并无恶意，侵权立删</em><p></p><p><hr><br>Good night!</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;This post is used to test something.And I use HTML 5 in main to finish it which I learn recently.To my surprise,I get a fantastic think in this progress and I want to make it in  the future.&lt;/p&gt;
+&lt;p&gt;&lt;hr&gt;&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="test" scheme="http://nokehubert.cn/tags/test/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>The two day&#39;s learning of HTML 5</title>
+    <link href="http://nokehubert.cn/2017/10/13/The-two-day-s-learning-of-HTML-5/"/>
+    <id>http://nokehubert.cn/2017/10/13/The-two-day-s-learning-of-HTML-5/</id>
+    <published>2017-10-12T17:10:23.000Z</published>
+    <updated>2017-10-14T14:12:24.398Z</updated>
+    
+    <content type="html"><![CDATA[<p>Long time to see,there is not enough time for me to finish a post yesterday.And I have cost some days to learn HTML 5.<br>And I want to show my ideas about HTML 5.<br><a id="more"></a><br>Firstly,it is a useful thing truely.As a kind of tag languages,it is easy for who want to learn the making of web.Clearly,its struct is so well.A tag have own natures,with the help of  colorful tags,authors can make the web accord with which they want.<br>Though I haven’t finish its study,I can feel what these days do is so beneficial for me.In especial,the HTML anchor’s using makes me feel I am now creating a web,of which feeling is so enjoyrable.<br>I will keep on study it,good night!</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Long time to see,there is not enough time for me to finish a post yesterday.And I have cost some days to learn HTML 5.&lt;br&gt;And I want to show my ideas about HTML 5.&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="html" scheme="http://nokehubert.cn/tags/html/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>The create of FTP service</title>
+    <link href="http://nokehubert.cn/2017/10/11/The-create-of-FTP-service/"/>
+    <id>http://nokehubert.cn/2017/10/11/The-create-of-FTP-service/</id>
+    <published>2017-10-10T16:49:27.000Z</published>
+    <updated>2017-10-14T14:11:43.790Z</updated>
+    
+    <content type="html"><![CDATA[<p>The time was late,and I want to say today is a busy day.To make the FTP service,I had tried many ways.In finally,I still create one.But making me surprise,it is so easy truly.How to say,it only needs the WDCP.<br><a id="more"></a><br>Because of I make it through virtual machine last time,I don’t feel something special.And I also use the system of unbuntu to create one today.But when I try to make it in my cloud host,there are something wrong with my operation such as I don’t konw how to use Xshell to operate my cloud host to add some codes to some files.It drives me crazy.<br>Oh!When you meet a screen only will give some wrong tips and you only want it do some easy things,you must be crazy.<br>En,let me be calm.<br>On the interface of WDCP,you will find some tips soon.It only needs you click on it,you can create a FTP server!And I cost most time to open  vsftpd’s service in last way.<br>What I want to say,I still want to use last way to finish it if I can for it can make me learn more.<br>At night,I also study some about html 5.I fall in love with it these days I think.<br>That’s all,good night.</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;The time was late,and I want to say today is a busy day.To make the FTP service,I had tried many ways.In finally,I still create one.But making me surprise,it is so easy truly.How to say,it only needs the WDCP.&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="FTP" scheme="http://nokehubert.cn/tags/FTP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>About theme&#39;s update</title>
+    <link href="http://nokehubert.cn/2017/10/09/About-theme-s-update/"/>
+    <id>http://nokehubert.cn/2017/10/09/About-theme-s-update/</id>
+    <published>2017-10-09T14:01:07.000Z</published>
+    <updated>2017-10-14T14:11:14.093Z</updated>
+    
+    <content type="html"><![CDATA[<p>Today,though I experience the progress of building a FTP server through some ways,I think I haven’t mastered it,so I decide to put off it.In consideration of my time,I also give up some tries.<br><a id="more"></a><br>Now my blog has been added to the ficitions of tags,categories and about.In fact,it is easy because it only need to create a new page and add some codes.Bisides,I make the background animation of  nest open,which is why you look some interesting animation at present.<br>This day is no so good,I almost lost my headset,em,but the life is only what you think.So,being happy,and you will feel more.<br>This is all,I want to keep on trying.</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Today,though I experience the progress of building a FTP server through some ways,I think I haven’t mastered it,so I decide to put off it.In consideration of my time,I also give up some tries.&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="hexo" scheme="http://nokehubert.cn/tags/hexo/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>The theme and click&#39;s setting</title>
+    <link href="http://nokehubert.cn/2017/10/08/The-theme-and-click-s-setting/"/>
+    <id>http://nokehubert.cn/2017/10/08/The-theme-and-click-s-setting/</id>
+    <published>2017-10-08T08:25:42.000Z</published>
+    <updated>2017-10-14T17:41:20.575Z</updated>
+    
+    <content type="html"><![CDATA[<p>Look!My new theme!Aha,I feel very happy when I looked my website being showed in my view.Though it is no perfect,it also let me can’t help jumpping up.Em……This is it.<br>It must be true that the study is so interesting!<br><a id="more"></a><br>I use the next to finish  my theme’s reseting,and its official description is very exhaustive.After reading it,I learn many and I chose the row version which is mostly suit to me.<br>Maybe you haven’t noticed it yet,the reading number has been showed in this interface,though maybe no many people pay attention my little website.<br>What’s more,I find a small plug-in unit which is so cute.You are right,it is anime style.I feel so excited!Thanks for the help from a blogger,I have put this pendant in my website now.Oh!<br>This day is also fantastic!</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Look!My new theme!Aha,I feel very happy when I looked my website being showed in my view.Though it is no perfect,it also let me can’t help jumpping up.Em……This is it.&lt;br&gt;It must be true that the study is so interesting!&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Xshell and WDCP</title>
+    <link href="http://nokehubert.cn/2017/10/07/Xshell-and-WDCP/"/>
+    <id>http://nokehubert.cn/2017/10/07/Xshell-and-WDCP/</id>
+    <published>2017-10-07T07:58:53.000Z</published>
+    <updated>2017-10-14T17:40:32.156Z</updated>
+    
+    <content type="html"><![CDATA[<p>This day’s works cost me 3 hours,and it almostly be cost in the installation of the program.<br>It is the first time I try to connect to my new server,needless to say,I get the feeling of freshness.Xshell is easy to install,and it also uses Chinese which gives me much time to study how to use the software.After inputing my messages of my server,I connect to my server succeessfully,I fell happy though  the software interface only give me the color of dark.<br><a id="more"></a><br>Because the server uses the linux system I use the two ways to finish this operation of installation of WDCP that one succeed but other failed.The source code insatallaion give me the feeling of fussy,but I finish it finally.<br>This day I still try to do something,em,I hope I will not give up.</p><h5 id="2017-10-7"><a href="#2017-10-7" class="headerlink" title="2017 10 7"></a>2017 10 7</h5><h4 id="2017-10-7-1"><a href="#2017-10-7-1" class="headerlink" title="2017 10 7"></a>2017 10 7</h4><h3 id="2017-10-7-2"><a href="#2017-10-7-2" class="headerlink" title="2017 10 7"></a>2017 10 7</h3><h2 id="2017-10-7-3"><a href="#2017-10-7-3" class="headerlink" title="2017 10 7"></a>2017 10 7</h2><h1 id="2017-10-7-4"><a href="#2017-10-7-4" class="headerlink" title="2017 10 7"></a>2017 10 7</h1>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;This day’s works cost me 3 hours,and it almostly be cost in the installation of the program.&lt;br&gt;It is the first time I try to connect to my new server,needless to say,I get the feeling of freshness.Xshell is easy to install,and it also uses Chinese which gives me much time to study how to use the software.After inputing my messages of my server,I connect to my server succeessfully,I fell happy though  the software interface only give me the color of dark.&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>This plugin</title>
+    <link href="http://nokehubert.cn/2017/10/06/This-plugin/"/>
+    <id>http://nokehubert.cn/2017/10/06/This-plugin/</id>
+    <published>2017-10-06T01:46:49.000Z</published>
+    <updated>2017-10-14T17:40:15.091Z</updated>
+    
+    <content type="html"><![CDATA[<p>As a student who don’t has so much knowledge,I contact with the design of blog,and I know this must be a good choice for my futural life.<br>Whoever have the skills of designing who I want to be.Oh,my English is so bad which feeling likes Chinglish.<br><a id="more"></a><br>This day I also try,and I find a software which named sublime and a plugin which named livereload.They help me fall in love with the design of blog more quickily.<br>I will do more,I will be better.<br>And I am sure,I will be.</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;As a student who don’t has so much knowledge,I contact with the design of blog,and I know this must be a good choice for my futural life.&lt;br&gt;Whoever have the skills of designing who I want to be.Oh,my English is so bad which feeling likes Chinglish.&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Say yes</title>
+    <link href="http://nokehubert.cn/2017/10/05/Say-yes/"/>
+    <id>http://nokehubert.cn/2017/10/05/Say-yes/</id>
+    <published>2017-10-05T15:54:25.000Z</published>
+    <updated>2017-10-13T16:42:57.492Z</updated>
+    
+    <content type="html"><![CDATA[<p>This is my first time to finish my blog,and it means I will continue to do my best.<br>So, looking at me ,I will be more strong!<br>Good night!</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;This is my first time to finish my blog,and it means I will continue to do my best.&lt;br&gt;So, looking at me ,I will be more strong!&lt;br&gt;Good 
+      
+    
+    </summary>
+    
+    
+      <category term="test" scheme="http://nokehubert.cn/tags/test/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>My first post</title>
+    <link href="http://nokehubert.cn/2017/04/28/My-first-post/"/>
+    <id>http://nokehubert.cn/2017/04/28/My-first-post/</id>
+    <published>2017-04-28T13:51:34.000Z</published>
+    <updated>2017-10-14T17:39:49.344Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="word"><a href="#word" class="headerlink" title="word"></a>word</h5><h4 id="word-1"><a href="#word-1" class="headerlink" title="word"></a>word</h4><h3 id="word-2"><a href="#word-2" class="headerlink" title="word"></a>word</h3><h2 id="word-3"><a href="#word-3" class="headerlink" title="word"></a>word</h2><h1 id="word-4"><a href="#word-4" class="headerlink" title="word"></a>word</h1><a id="more"></a><ol><li>23456</li><li>23456</li><li>23456</li><li>23456</li><li>23456</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h5 id=&quot;word&quot;&gt;&lt;a href=&quot;#word&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h5&gt;&lt;h4 id=&quot;word-1&quot;&gt;&lt;a href=&quot;#word-1&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h4&gt;&lt;h3 id=&quot;word-2&quot;&gt;&lt;a href=&quot;#word-2&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h3&gt;&lt;h2 id=&quot;word-3&quot;&gt;&lt;a href=&quot;#word-3&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h2&gt;&lt;h1 id=&quot;word-4&quot;&gt;&lt;a href=&quot;#word-4&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h1&gt;
+    
+    </summary>
+    
+    
+      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>postName</title>
+    <link href="http://nokehubert.cn/2017/04/28/postName/"/>
+    <id>http://nokehubert.cn/2017/04/28/postName/</id>
+    <published>2017-04-28T13:20:46.000Z</published>
+    <updated>2017-10-14T14:06:26.865Z</updated>
+    
+    <content type="html"><![CDATA[<p>Six six.<br>Firstly.<br>Emmm……<br><a id="more"></a><br>Aha,now I can use this blog to write my test about my study.<br>Emmmm……Name is Lin.<br>Let me see the future</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Six six.&lt;br&gt;Firstly.&lt;br&gt;Emmm……&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="test" scheme="http://nokehubert.cn/tags/test/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://nokehubert.cn/2017/04/28/hello-world/"/>
+    <id>http://nokehubert.cn/2017/04/28/hello-world/</id>
+    <published>2017-04-27T17:11:47.000Z</published>
+    <updated>2018-05-17T02:41:00.083Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
