@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="linux," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;首先，写这篇文章主要是为了让心有余力想学习linux的朋友更快地完成linux的部署（以win10+CentOS7双系统为例），在看本篇文章前还请自行了解下Linux分区以及系统开机的引导（BIOS,MBR,URFI,GPT……）等相关的知识，并做好多次安装，甚至是不小心把自己的数据全部清空的心理准备。">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Win10+CentOS 双系统">
+<meta property="og:url" content="http://nokehubert.cn/2018/04/02/Win10-CentOS-双系统/index.html">
+<meta property="og:site_name" content="远い理想郷">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;首先，写这篇文章主要是为了让心有余力想学习linux的朋友更快地完成linux的部署（以win10+CentOS7双系统为例），在看本篇文章前还请自行了解下Linux分区以及系统开机的引导（BIOS,MBR,URFI,GPT……）等相关的知识，并做好多次安装，甚至是不小心把自己的数据全部清空的心理准备。">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_website.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/iso_use.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/manager.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/free_space.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/baidu_bios.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_set_up.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_set_up2.png">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_set_up3.png">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_error.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_language.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_set.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_form.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_software.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_partition.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_biosboot.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_capacity.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_check.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_KDMUP.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_net_set.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_evething_over.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_user.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/EasyBCD.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_start.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_introduce.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_last.jpg">
+<meta property="og:updated_time" content="2018-05-17T02:44:35.036Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Win10+CentOS 双系统">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;首先，写这篇文章主要是为了让心有余力想学习linux的朋友更快地完成linux的部署（以win10+CentOS7双系统为例），在看本篇文章前还请自行了解下Linux分区以及系统开机的引导（BIOS,MBR,URFI,GPT……）等相关的知识，并做好多次安装，甚至是不小心把自己的数据全部清空的心理准备。">
+<meta name="twitter:image" content="http://nokehubert.cn/photos/centos_website.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://nokehubert.cn/2018/04/02/Win10-CentOS-双系统/"/>
+
+
+
+
+
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+  <title>Win10+CentOS 双系统 | 远い理想郷</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6e41aac2e23b737c04040afce07415cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">远い理想郷</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-photos">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            图册
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-headphones"></i> <br />
+            
+            音乐
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sai_lm">
+          <a href="/sai-lm/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-paint-brush"></i> <br />
+            
+            画作
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nokehubert.cn/2018/04/02/Win10-CentOS-双系统/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="nokehubert">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/hexo_zanshi.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="远い理想郷">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Win10+CentOS 双系统</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-02T23:42:20+08:00">
+                2018-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/04/02/Win10-CentOS-双系统/" class="leancloud_visitors" data-flag-title="Win10+CentOS 双系统">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;首先，写这篇文章主要是为了让心有余力想学习linux的朋友更快地完成linux的部署（以win10+CentOS7双系统为例），在看本篇文章前还请自行了解下Linux分区以及系统开机的引导（BIOS,MBR,URFI,GPT……）等相关的知识，并做好多次安装，甚至是不小心把自己的数据全部清空的心理准备。<a id="more"></a><br>&emsp;&emsp;那，接下去看你的文章还能有什么意义？看官请别着急，事实就是如此，linux并不是简单到随便就能够安装妥善的东西（当然您硬要是说unbuntu在虚拟机上只需要几步即可，那我也不能拿很好的言辞去反驳您）。个人是蛮喜欢虚拟机的简便性的，足够完美的仿真，但是有些需要学习的东西就是在方便你的同时就会让您忽略掉很多细节，可以很明确地跟您说，本人也装了N次失败，原因很简单，对概念的不清晰，也就是不懂，一夜的苦等，一早上的煎熬，终于在第二天中午部署完成，并做好了win10的引导（虽然目前重启并没有完全调整好），本篇文章是针对实机安装win10+CentOS而言的，不同版本不同方式将导致处理的方式有很大的区别，这点还请务必多注意。<br>&emsp;&emsp;好，废话不多说了，那么就直接开始吧。<br>&emsp;&emsp;敢想象想装双系统的朋友之前都已经拥有了一套系统，如果您在之前安装的是linux系列或者是其他系统的，建议你可以参考一下其他的教程，或者是将本篇文章作为可能性继续阅读，如果是Windows系列的，请您耐心看下去。本人电脑安装的win10，为此，可以很方便地进行接下来的操作。<br><img src="/photos/centos_website.jpg"><br>&emsp;&emsp;首先，您最好能拥有两个8G以上的U盘，一个作为CentOS的刻录盘，一个作为Windows的pe盘。先从CentOS的官网上下载你所需要的镜像文件（iso文件），至这篇文章书写时，为CentOS-7-?-1708的包，大概分为三类，DVD（4.21G）,Evething（8.09G）,Minimal（792MB）三种，DVD版一般情况下作为练习机就已经很够了，Evething,Minimal字面意思，即完全版和轻小版，本人选择的是DVD版，客观因素，我只有一个8G金士顿U盘闲出来。各镜像站的下载速度各有千秋，但不属于本篇文章的讨论范围，这里就不详说。<br>&emsp;&emsp;接下来，你需要安装一款合适的启动U盘处理软件（这里以UltraISO为例，后面的操作也是以该软件的操作说明），在处理软件中打开您刚刚下载的iso文件，启动–&gt;写入硬盘映像，确保映像文件选中了您的U盘，写入方式改为USB-HDD+,隐藏启动分区选择“无”，因为做启动U盘的话，跑不了要格式化U盘，操作前请将有用的数据备份，虽然过程中是自动格式化，但保险的话可以自己格式化，左下角满足你的需求，格式完成仅需要几分钟，因电脑而异，完成后，继续点击“写入”，这个过程就看你的U盘的速度（2.0/3.0）和你的电脑了，本人笔记本上也跑了快20来分钟才刻录完成。完成后，直接退出软件即可，至此，您的CentOS启动U盘制作完毕。（相关的启动U盘制作软件有很多，甚至可以避免后面要说的问题，时间原因，就不展开了）<br><img src="/photos/iso_use.jpg"><br>&emsp;&emsp;接下来，要安装系统肯定要有充足的空间，考虑到练习机可能要有一段时间折腾，本人就空出了50G左右的空间。在您的“此电脑”或者是“我的电脑”右键唤出菜单，点击管理，接下来选中存储-磁盘管理，选择您空出空间的磁盘（当然是逻辑分区部分），右键-压缩卷，唤出压缩界面，会提示您可用的压缩空间量，这里只是展示，您需要选择您所想要您CentOS系统所应拥有的存储量大小，确认无误之后，点击压缩，根据电脑情况和您选择的压缩卷大小可能会出现长时间鼠标都在转圈，也就是长时间等待的情况，这点请放心，是正常的，完成后会发现出现第一张图中可用空间类似的绿色区段，至此，您在Windows下的准备基本达成。（提醒您在之后的引导处理中可能会用到另一块pe盘，也是需要在Windows下处理的，即之前所描述的第二块U盘，至于操作顺序，看个人理解，先别急着安装系统，可以先浏览一遍后面的内容）<br><img src="/photos/manager.jpg"><br><img src="/photos/free_space.jpg"><br>&emsp;&emsp;再接下来，请重启您的系统，根据您的电脑情况调出BIOS，本人是华硕飞行堡垒，在LOGO消失前按着F2即可，当然这里还会出现bios版本不同以至于操作方式不同的问题，这点还请您见谅，本人学识有限，且手头目前只有一台笔记本。根据菜单的提示，或者是网上的BIOS教程进行操作，有两种方式可以继续下去，一种，直接通过更改启动项顺序，即在Boot栏这里更改，选中您的linux启动U盘，F10保存退出，接下来看见您的启动U盘的安装界面即说明这种方式是允许的（备注，此种方式在本人的电脑中是默认UEFI的启动方式，当然也可以关闭UEFI启动，详情请参见百度）。第二种就是在Save&amp;Exit栏，通过直接选择启动方式（本人是这么理解的，当然这点您可以怀疑）来进行选择启动项，这里可以选择两种方式UEFI方式，非UEFI直接MBR引导的方式，由于本人磁盘是NTFS的文件系统，当然是不抱以使用UEFI+GPT方式进行CentOS安装的心态的，故此，在这里选择非UEFI方式的启动U盘方式，即没有UEFI前缀的选项，当然其他启动U盘制作软件也可以直接拥有USB-HDD前缀的启动方式于Boot栏中可供选择，这里因为没有具体实操过先不提，选择过程中您可能会碰到很多问题，还请妥善使用百度。<br><img src="/photos/baidu_bios.jpg"><br>&emsp;&emsp;看到类似于文本下面的图，您可以认为您的启动U盘成功被引导了，并使您的电脑成功进入了“除错模式”。首先先解释三项的含义，分别是以正常方式安装CentOS7,以救援CentOS系统方式安装，以执行记忆体测试方式。UEFI启动模式下，您所需要的操作是按下“Tab”键，调出下面的字段，直接删除“LABEL=CentOS\x207\x20x86_64 rd.live.check”，并输入“ linux dd”替换，回车，接下来就可以看到下面第三张图的情况，注意观察LABEL下的标签名，有一个即为您在格式化U盘时所定义的U盘名，再记录下DEVICE它所对应的位置，即文件名根据个人的电脑不同这个参数是不同的。重启电脑，再次执行前面的步骤，在“除错模式”下选择第一项，按下“Tab”,更改“LABEL=CentOS\x207\x20x86_64 rd.live.check”类似的在“hd:”后面的字段（quiet可以保留）为“/dev/sdc4”，这里的“sdc4”是本人在之前的操作中获取的U盘位置，即在linux下的文件名，请您根据您之前的信息填入，在quiet前也可以添加其他的语句，例如检查的相关语句等，当然这里不说明下去，完成后“Enter”即可。而对本人电脑可以成功安装的方式的话即是选择非UEFI启动，直接进入另外一个类似的“除错模式”的相关界面，用“e”弹出类似于刚才所说的字段，同理可以修改相应的参数，获取自己U盘的文件名（这里是用”ctrl+x”执行），并同理修改为“/dev/sdc4”（sdc4替换为您的U盘的文件名），“ctrl+x”。<br><img src="/photos/centos_set_up.jpg"><br><img src="/photos/centos_set_up2.png"><br><img src="/photos/centos_set_up3.png"><br>&emsp;&emsp;再后面，会出现很多OK和其他字符串，等待片刻即可，至于在此遇到后面这张图类似的情况，并且长时间卡在这里甚至提示您，x安装界面启动失败，提供给您很多选项并等待您选择（其实也就是文本安装界面）的情况的话，网上出现这样的情况也是蛮多的，本人之前也是卡在这里度过了一个晚上，然后在CentOS贴吧中看到了类似问题的可能原因和处理手段，仅供参考，这点还请原谅。出现的原因，很可能两种，您的启动U盘部分文件损坏，这种说法可能性很小，但基于如果长时间没有在文字安装界面中做出选择的话，会报内核出现严重BUG的错，这里判断有可能，第二种，相对第一种可能性大，该版本的linux内核无法识别出您的某些设备（例如独显），导致图形安装界面无法正常启动。解决的方式对症下药，第一种情况尝试着重新刻录U盘即可，如果之前有误操作的话，并影响到原来的空闲空间，而且在后面的安装过程中提示无空闲空间的话，可以在原本空闲空间的位置上新建卷再删除卷（等于做了一次格式化），第二种情况只要在“/dev/sdc4”（sdc4对应您的U盘文件名）后加上“ nomodeset”即可（目前本人的理解是强行在集显下运行图形界面安装），再强调一次，各个电脑出现的情况都是很针对性的，碰见问题多问问别人或者自行百度，这里给的观点都仅仅是个人观点，仅供参考，学疏才浅，还请见谅。<br><img src="/photos/centos_error.jpg"><br>&emsp;&emsp;等待之后，便是和善很多的CentOS图形安装界面了，拖动滚动条直至底部，选择中文，右侧细选简繁体，点击继续。<br><img src="/photos/centos_language.jpg"><br>&emsp;&emsp;如本段话底下示意图，系统会为您设置好您的日期时间，键盘配置，语言支持，您也可以继续点击进入并完成修改。<br><img src="/photos/centos_set.jpg"><br>&emsp;&emsp;“安装来源”这里设置“自动检测到的安装软体”（USB安装而言，其他方式如光盘请参看其他教程）。<br><img src="/photos/centos_form.jpg"><br>&emsp;&emsp;软体选择，选择方式由用户自行考量，若需要图形界面，可以选择“含有GUI的伺服器”（预载GNOME），或是直接选择“GNOME桌面环境”，或是选择另外一套图形界面“KDE Plasma Workspaces”，这里本人按照片选框选择。<br><img src="/photos/centos_software.jpg"><br>&emsp;&emsp;安装目的地，这里是我们进行磁盘分配的地方，之前足足50G大小的空闲空间就是打算用在这里的。在显示“本机标准磁盘”的下方将会看到你设备的磁盘分布情况，有无可用的空间一目了然（后面都有备注说明，如果您方才生成以50G大小的空闲空间的话，这里您可以正好在这找到一项空闲那么大的）。因为是练习机，当然少不了linux下对磁盘分配情况的熟悉，这里选“我要配置分区”，点击左上角“完成”，以下的分区引用自鸟哥教程中的部分细节，仅供参考，这里也说明在此处引用绝无恶意，只是希望这篇文章能够让想装机的朋友更加轻松，附上<a href="http://linux.vbird.org/linux_basic/0157installcentos7.php" target="_blank" rel="external">鸟哥繁体站链接</a><br><img src="/photos/centos_partition.jpg"><br>&emsp;&emsp;这里可以稍微介绍的是，装置类型方面，标准分割区是我们平常所见的系统为我们进行设定磁盘大小的方式，LVM则是一种可以弹性增加/消减档案容量的设定，LVM紧张供应则是LVM的进阶版，运行情况有所不同这里不展开说明。档案系统方面，主要由ext2/ext3/ext4,swap,BIOS Boot,xfs,vfat五种。ext系列是较为早期的档案系统类型，对于系统复原比较迅速。swap为磁碟模拟成为记忆体，由于不使用目录树的挂载，swap不需要指定挂载点（右侧栏可以体现），BIOS Boot则是GPT会用到的项目,MBR分割的朋友可以不用管。xfs则是目前CentOS预设的档案系统，对大容量的磁盘管理好，格式化速度快，适合如今随便上TB的磁盘环境，。vfat为linux和window所同时支持的档案系统类型，可以允许资料的交换。<br>&emsp;&emsp;首先，我们点击“+”，创建BIOS boot分区，挂载点是“biosboot”,大小设定为“2M”，点击新增挂载点后，可以看到右侧显示出该分区目前的情况，并可以做到修改（但是本人在这出现一个情况，一开始选择容量1024KiB，结果后面更改不了，虽然并不需要使用到这个分区），装置类型选择标准分割区，档案系统BIOS Boot。<br><img src="/photos/centos_biosboot.jpg"><br>&emsp;&emsp;建立”boot”挂载点档案系统，容量设定1024M，装置类型，档案系统保持不变。<br>&emsp;&emsp;同理，加入新的挂载点“/”，即根目录，容量容量设定为10G，装置类型选择LVM，档案系统xfs，点击右侧的“Volume Group”向下数第二行的“Moedify”，进入下图界面，1号箭头处更改为固定，后面设定为30G，并储存，这一步是为了不使用完50G容量，因为作为练习机，拥有空闲空间可以方便之后的学习。<br><img src="/photos/centos_capacity.jpg"><br>&emsp;&emsp;下一步新增“/home”挂载点，容量设定为5G，同样装置类型设定为LVM，档案系统设定为xfs，“更新设定值”。<br>&emsp;&emsp;加入“swap”，容量设定为1G，一般建议是记忆体的两倍大小，装置类型设定为LVM，档案系统设定为swap。<br>&emsp;&emsp;最后详细检查一遍之前的设定没有问题之后点击左上方的“完成”，出现提示框，确认无误后“接受更改”，若是下方曾出现过黄色引导框提醒的话说明分配存在问题，这里的情况因人而异，请仔细检查，或者自行百度查看自己的解决措施。<br><img src="/photos/centos_check.jpg"><br>&emsp;&emsp;KDMUP,该项目会因linux核心出现情况而在记忆体记录下发生的当即事件，主要是用于除错，可以自行判断是否开启。<br><img src="/photos/centos_KDMUP.jpg"><br>&emsp;&emsp;网络&amp;主机名称，这里可以看到设备的网卡的特殊代号，右下角设定可以进行IP设定，但因为本人使用的是手机热点，并且为了避免麻烦，省去多余的操作，不做更改（图片因为在CentOS内，并没有相关的截图，所以使用了鸟哥网站的截图）。<br><img src="/photos/centos_net_set.jpg"><br>&emsp;&emsp;当您看到如下界面的时候说明一切都已准备就绪，点击右下角“开始安装”，进入到“组态”菜单，这里可以进行对ROOT密码，及在安装的同时创建访问的一般用户，ROOT即Windows下的管理员，设定一般用户则是方便我们平常的使用，因为linux系统对使用者的自由度较高（甚至可以自己杀死自己），所以拥有一个一般类型的账户可以减少您在折腾系统时所出现的事故可能。由于linux对安全性能的要求较高，如果您的root密码安全度不高的话，将可能要求您二次点击相关的完成按钮，故建议您一开始就设定安全度较高的密码，也确实有利于CentOS的管理。用户建立方面，密码安全度相较之低，可以勾选“让这位成为管理员”，之所以勾选是因为这样可以避免您在忘记root密码的情况下进行root管理，设定完成后，等待下方的进度条走完，大概需要10-15分钟左右，因各电脑情况而异，完成后点击重新开机即可。<br><img src="/photos/centos_evething_over.jpg"><br><img src="/photos/centos_user.jpg"><br>&emsp;&emsp;因之前选择UEFI或者选择非UEFI这里可能会出现三种情况，一种是直接为CentOS的，一种是直接就具备了引导，可以选择CentOS或者是Windows的，这两种同学可以跳过这一段。最后一种是重启后直接是Windows 10，那么这种情况的同学您需要在Windows下载启动项修改工具“EasyBCD”，这里资源就请自行百度了，资源遍地走，我一般是这么认为的，基本上您想翻阅的资源在网上都有，只是您不想抽出您宝贵的时间而已.进入界面后选择“添加新条目”，选择“linux/BCD”一栏，然后改变类型为“GURB2”，为您的启动项设定一个想要的名字，驱动器默认选择“自动定位和加载”即可，最后点击“添加条目”，在编辑引导菜单处设定您的启动项的默认项（即不进行操作的情况下，几秒之后由系统为您选择开机的系统），完成设定后，右下角“保存设定”。重启即可选择进入CentOS。这里建议Windows下多进行一步操作，即关闭“快速开机”，否则后面双系统引导后可能出现无限重启，无法关机的情况。<br><img src="/photos/EasyBCD.jpg"><br>&emsp;&emsp;成功启动了CentOS之后，因为是首次安装，将会出现“初始设定”样的界面，如之前在图形安装界面中操作的那样，直接选中“授权资讯”，勾选跳出的界面左下角中“我接受此授权协议”即可，确认完之后就会弹出CentOS登录账户的界面，根据您之前设定的账户信息填写即可，登录之后您就可以认为您成功完成了CenOS的安装了，下面挂上当时手机拍摄的两张图片。<br><img src="/photos/centos_start.jpg"><br><img src="/photos/centos_introduce.jpg"><br>&emsp;&emsp;当然这样也还没算完，您要是想在您开机的时候完成系统的切换，即双系统的话，您还需要进行进一步的操作，当然因为安装方式的不同可能您已经完成了这样的切换，那么您就可以轻松地阅读接下来的内容了。<br>&emsp;&emsp;CentOS下是利用grub来管理启动项的，所以接下来的操作无非就是更改grub的相应数值，有两种方式，笔者只尝试了第一种，第二种因为当时没有意识到硬盘在不同电脑的识别情况，以及之前Win10系统部署不是本人亲手操作的也有点因素，所以第二种方式一开始是无果的。第一种，文件修改的方式，右键打开您的终端（这一部分就请您自己去了解了），输入“sudo nautilus”，即以root身份打开文件，会需要您输入一遍密码，这样可以保证你可以打开boot目录下的grub.cfg文件。您需要先找到这个路径——“/boot/grub2/grub.cfg”，文件打开后您需要找到“### BEGIN /etc/grub.d/30_os-prober ###”这一行，在后面添加<br>menuentry ‘Windows 10’ {<br>insmod ntfs<br>set root=(hd0,1)<br>chainloader +1<br>}<br>&emsp;&emsp;这里的“Windows 10”是您在启动选择界面中会看见的值，”set root=(hd0,1)”有点像将引导加载功能转移给其他的loader一样的作用，“hd0”代表您电脑上的第一块硬盘，但是笔者其实是“hd1”，也就是第二块，所以当时一直没找到原因，后来一样在开机选择界面中用“e”调出之前所的字段，多次更改才发现原因，这里应该是根据您的windows系统是在电脑哪块硬盘的启动扇区（也就是其他loader的所在）内引导的而确定的，“1”则是一般情况下您系统盘的位置（注意这里是从1开始，一般我们把C盘作为系统盘），保存并重启，您就可以发现在原来的启动选择中除了正常启动（一般是第一项）和应急启动（一般是第二项）多了”Window 10”的启动项，如果您不选择，则是由系统默认选择CentOS的正常启动方式，您需要的是尝试选择”Window 10”的启动项，如果出错，请倒回去检查grub.cfg文件中的内容或是像笔者之前说的那样直接在启动选择界面中按“e“更改数值，“ctrl+x”运行。如果成功，恭喜，您已经成功引导进入到了“Window 10”，但是需要检查在“Window 10” 下是否能够正常关机，不能则关闭“快速开机”，再启动的时候是否会出现之前您所看到的MBR启动选择的界面，如果不能，同理用之前说CentOS刚安装完之后启动只有Window10的方法解决（即EasyBCD）。<br>&emsp;&emsp;如果您想更改默认启动项为“Window 10”，那么您还需要进行下一步操作。修改引导顺序，首先在Centos中右键唤出终端，先执行“su”进入root模式，会要求您输入root密码，接下来执行“cat /boot/grub2/grub.cfg |grep menuentry”，可以看到你拥有几个内核，会发现之前设定的“Window 10”显示在这里，接下来执行“ grub2-set-default “Window 10” ”（为了看得清楚我在命令两侧各多打了一次空格），再用“grub2-editenv list”命令检查您是否已经修改成功，失败请重复之前的操作，成功将显示“saved_entry=Window 10”，重启检查效果即可。<br>&emsp;&emsp;<a href="https://blog.csdn.net/q260864798/article/details/53502242" target="_blank" rel="external">方法二请点击这里</a><br>&emsp;&emsp;至此，您的“Win10+CentOS”双系统就安装完毕了！恭喜！也祝您在linux里玩得愉快！<br><img src="/photos/centos_last.jpg"></p>
+<p><hr><br>&emsp;&emsp;接下来说明一下关于本文涉及的内容，无可厚非，这篇文章是集合了很多人在网上的教程的观点而形成的（本人也初学linux而已，做不到完全由自己说明），我需要对引用的的内容（包括思想，图片等）对这些朋友表示感谢，也请看官保持平和的心态，并对这些“隐藏的作者”表示尊重。再次郑重说明，本文引用到的内容，绝无恶意，并且笔者也是以想要教会人的心态写这篇文章的，个人观点比重也很大，还望理解！由于是个人的文章，希望看官不要随意转载至您任何将要发表的文章中，或者征求笔者同意，引用的内容还请标明出处，还望理解。另外希望看官在遇到各个情况的时候不要心慌，灵活百度，笔者写的不一定对，也请您尽量抱以怀疑的心态去看待，感谢！<br>&emsp;&emsp;最后，文中所参考的内容有：<br><br><a href="https://www.linuxidc.com/Linux/2016-06/132051p4.htm" target="_blank" rel="external">linux公社&emsp;&emsp;&emsp;https://www.linuxidc.com/Linux/2016-06/132051p4.htm</a><br><a href="https://blog.csdn.net/flyer1011/article/details/78185509" target="_blank" rel="external">CSDN博客&emsp;&emsp;&emsp;https://blog.csdn.net/flyer1011/article/details/78185509</a><br><a href="http://linux.vbird.org/linux_basic/0157installcentos7.php" target="_blank" rel="external">鸟哥的Linux私房菜&emsp;&emsp;&emsp;http://linux.vbird.org/linux_basic/0157installcentos7.php</a><br><a href="https://blog.csdn.net/q260864798/article/details/53439578" target="_blank" rel="external">CSDN博客&emsp;&emsp;&emsp;https://blog.csdn.net/q260864798/article/details/53439578</a><br><a href="https://blog.csdn.net/q260864798/article/details/53502242" target="_blank" rel="external">CSDN博客&emsp;&emsp;&emsp;https://blog.csdn.net/q260864798/article/details/53502242</a><br><a href="http://tieba.baidu.com/p/4858208000?pn=5" target="_blank" rel="external">百度贴吧156楼&emsp;&emsp;&emsp;http://tieba.baidu.com/p/4858208000?pn=5</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/15/关于Centos-7的屏幕亮度设定/" rel="next" title="关于Centos 7的屏幕亮度设定">
+                <i class="fa fa-chevron-left"></i> 关于Centos 7的屏幕亮度设定
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/15/One-I-can-do-it/" rel="prev" title="One I can do it">
+                One I can do it <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/hexo_zanshi.png"
+                alt="nokehubert" />
+            
+              <p class="site-author-name" itemprop="name">nokehubert</p>
+              <p class="site-description motion-element" itemprop="description">未来总是一张白纸，只有自己的意志，才能在上面刻下足迹</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">nokehubert</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("WfPDhvWiANkAFt7gnIQ1gDBm-gzGzoHsz", "nV5X8ukN6Nunur7ddHSPfVpJ");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+    <script type="text/javascript" src="/live2d/script.js"></script>
+    <canvas id="live2dcanvas" width="150" height="300" class="live2d"></canvas>
+    <style>
+      #live2dcanvas {
+        position: fixed;
+        right: 0px;
+        z-index: 999;
+        pointer-events: none;
+        bottom: -60px;
+      }
+    </style>
+    <script>loadlive2d("live2dcanvas" ,"/live2d/assets/koharu/koharu.model.json",0.5)</script>
+  
+</body>
+</html>

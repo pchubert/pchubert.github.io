@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="linux," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;在安装CentOS中，尤其是目前7的版本，出现一开机就显示最大亮度，并且在右上角电源选项中并无出现可调节亮度选项，出于练习的目的，而使用CentOS学习linux就很难受（当然是指盯着高亮度的屏幕），笔者为此研究了一晚上，如下文所示，虽然不能完美保证解决问题，甚至在一些情况中实际上并没起到作用，但在某些情况也能起到作用，对于其中的运作机制还是很朦胧，但是会在之后的学习中继续">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Centos 7的屏幕亮度设定">
+<meta property="og:url" content="http://nokehubert.cn/2018/04/15/关于Centos-7的屏幕亮度设定/index.html">
+<meta property="og:site_name" content="远い理想郷">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;在安装CentOS中，尤其是目前7的版本，出现一开机就显示最大亮度，并且在右上角电源选项中并无出现可调节亮度选项，出于练习的目的，而使用CentOS学习linux就很难受（当然是指盯着高亮度的屏幕），笔者为此研究了一晚上，如下文所示，虽然不能完美保证解决问题，甚至在一些情况中实际上并没起到作用，但在某些情况也能起到作用，对于其中的运作机制还是很朦胧，但是会在之后的学习中继续">
+<meta property="og:image" content="http://nokehubert.cn/photos/windows_equipment.jpg">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_equipment.png">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_dgrub.png">
+<meta property="og:image" content="http://nokehubert.cn/photos/centos_rclocal.png">
+<meta property="og:updated_time" content="2018-05-17T02:46:30.130Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Centos 7的屏幕亮度设定">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;在安装CentOS中，尤其是目前7的版本，出现一开机就显示最大亮度，并且在右上角电源选项中并无出现可调节亮度选项，出于练习的目的，而使用CentOS学习linux就很难受（当然是指盯着高亮度的屏幕），笔者为此研究了一晚上，如下文所示，虽然不能完美保证解决问题，甚至在一些情况中实际上并没起到作用，但在某些情况也能起到作用，对于其中的运作机制还是很朦胧，但是会在之后的学习中继续">
+<meta name="twitter:image" content="http://nokehubert.cn/photos/windows_equipment.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://nokehubert.cn/2018/04/15/关于Centos-7的屏幕亮度设定/"/>
+
+
+
+
+
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+  <title>关于Centos 7的屏幕亮度设定 | 远い理想郷</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6e41aac2e23b737c04040afce07415cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">远い理想郷</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-photos">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            图册
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-headphones"></i> <br />
+            
+            音乐
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sai_lm">
+          <a href="/sai-lm/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-paint-brush"></i> <br />
+            
+            画作
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nokehubert.cn/2018/04/15/关于Centos-7的屏幕亮度设定/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="nokehubert">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/hexo_zanshi.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="远い理想郷">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于Centos 7的屏幕亮度设定</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-15T11:08:17+08:00">
+                2018-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/04/15/关于Centos-7的屏幕亮度设定/" class="leancloud_visitors" data-flag-title="关于Centos 7的屏幕亮度设定">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;在安装CentOS中，尤其是目前7的版本，出现一开机就显示最大亮度，并且在右上角电源选项中并无出现可调节亮度选项，出于练习的目的，而使用CentOS学习linux就很难受（当然是指盯着高亮度的屏幕），笔者为此研究了一晚上，如下文所示，虽然不能完美保证解决问题，甚至在一些情况中实际上并没起到作用，但在某些情况也能起到作用，对于其中的运作机制还是很朦胧，但是会在之后的学习中继续补充。<a id="more"></a><br>先声明本文所能帮助调节亮度的几种情况:<br>&emsp;&emsp;1.针对当前系统 /sys/class/backlight/intel_backlight/brightness存在的条件下<br>&emsp;&emsp;&emsp;效果：可以根据脚本利用命令行或者通过增加电源选项的方式调节（未实机测试）<br>&nbsp;<br>&emsp;&emsp;2.针对当前系统 backlight 下不存在文件的条件下（操作后出现文件夹且允许调节）<br>&emsp;&emsp;&emsp;效果：可以根据脚本利用命令行或者通过增加电源选项的方式调节（已实机测试）<br>&nbsp;<br>&emsp;&emsp;3.针对之前使用“nomodest”命令安装的linux操作系统（已实机测试）<br>&emsp;&emsp;&emsp;效果：可以在开机的时候未切换到独立显卡的阶段下进行亮度调整</p>
+<p>&emsp;&emsp;首先，先谈谈为什么CentOS会出现屏幕亮度无法调节的情况下，可能一开始您也跟笔者一样以为是以为安装了Minimal版或者是DVD版而造成的，但实际情况并非如此。对于一个服务器系统，CentOS 7所针对的是服务器，并非说是针对桌面办公而开发的，这一点也就是您之前使用Linux所感受到的“不友好”的根源，但问题是，这是另外一个层次的问题，对于服务器而言，Linux操作系统是非常优秀的，这是一个可以思考的方面。再者，这跟您的之前安装的配置（包括您的硬件情况）有关，就像上一篇文章《 Win10+CentOS双系统 》中碰见的问题一样，您所需要安装的linux操作系统本身就无法识别到您的某些硬件（比如N卡）。下面也可以放两张图，也补充了上篇文章对于是否是强行使用独显进行CentOS的安装的证明。很明显，图形处理的硬件变更了（当然，您也可以继续怀疑，本文的理解阶段并不深，出现理解的偏差是正常的，但是之后会继续思考下去，并尝试解释机理）。<br>&nbsp;<br><img src="/photos/windows_equipment.jpg"><br><img src="/photos/centos_equipment.png"><br>&emsp;&emsp;对于第一种情况，因为笔者的机子没有是没有那个文件夹的，但是在搜索解决方案的时候找到了方法，没理解错的话是利用脚本来处理的，没有实际操作过，就在这里先附上相关的链接，<a href="http://www.isvee.com/archives/1207" target="_blank" rel="external">三月有晴天的博客</a>。<br>&nbsp;<br>&emsp;&emsp;第二种情况，首先在CentOS中打开终端，“sudo nautilus” 使用root权限打开文件夹，然后修改 /etc/default 目录下的grub文件，把“ GRUB_CMDLINE_LINUX=”” ”  改成 “ GRUB_CMDLINE_LINUX=”acpi_backlight=vendor” ”。<br>&emsp;&emsp;下一步，更新grub,使用“grub2-mkconfig -o /boot/grub2/grub.cfg”，注意在CentOS下的更新grub并不是同Ubuntu常使用的“ update-grub ”，这个操作后，您之前所做的开机引导的相关设置将会重新更新（比如双系统下的Win10的引导等）。解决的方法很简单，跟着之前你处理的步骤重新添加一遍引导所需要处理的措施就好了（坏笑）。终端输入命令“shutdown -r now”，重新开机，即可发现右上角电源选项中多出现了一栏关于屏幕亮度的调节。点进 /sys/class/backlight 将出现新的文件夹（如intel_backlight，电脑不同，出现的文件名也不同）。若此刻您可以通过滑动来控制亮度，那么您此刻已经完成了修改亮度的目的。如果不然，则查看/boot/grub/grub.cfg是否每个启动项都加入了“acpi_backlight=vendor”<br><img src="/photos/centos_dgrub.png"><br>&emsp;&emsp;之后，为了简便对于屏幕亮度的管理，您还可以尝试利用类似于第一种情况的方案进行脚本撰写来简化亮度调节，而对于开机默认值的设定，您可以继续使用root权限下的文件夹对 /etc/rc.local 文件进行改写，进而达到开机亮度就自动调节为您所设定的值的效果，在注释的下面添加<br>“</p>
+<p>#类似的注释<br>echo 50 &gt; /sys/class/backlight/intel_backlight/brightness<br>exit 0<br>”<br>（数值还请自行修改,下图仅为演示截图，非实际情况）<br><img src="/photos/centos_rclocal.png"><br>&emsp;&emsp;第三种情况，也就是笔者的情况，根据第二种方法更改gurb后，在笔者电脑中出现的文件夹为“asus-nb-wmi”（根据各电脑的情况不同而不同），通过对右上角滑条的修改并不能达到调节目的，但是却现该文件夹下的brightness里的值改变了，说明此刻同网上说明的一种情况相同——即右上角滑条调节的仅仅只是影响另外一个数值，而没实际影响到显示出来的brightness，经过观察，发现，对于笔者的华硕笔记本而言，调节的应该为”actual_brightness”（同文件夹下）。<br>&emsp;&emsp;但是尽管使用了“chmod”（root下）对“actual<em>brightness”进行修改权限，所进行的操作（vim,文本编辑器，echo命令等）都无法正常地保存，也就是修改不了，在重新开机后，甚至发现所修改的权限又还原回去了，尽管文件夹的权限都已经修改了一遍，还是没有得出结果。<br>&emsp;&emsp;那么，是不是完全没有办法了呢？</em>(:з」∠)_，倒还有一个办法，就是在您开机时（对于双系统而言，并且是添加命令“nomodest”的安装方式），还未切换到独立显卡时就使用fn+f5或f6功能键（或者是类似的调节亮度的功能键）进行亮度的调节，这样也可以达到对于亮度调节的目的，只是比较遗憾的是，进入CentOS之后就不能再更改其值了。<br>&emsp;&emsp;另外，还值得一提的是，对于网上某些方法的实际效果，比如<a href="https://zhidao.baidu.com/question/1669601963041292267.html" target="_blank" rel="external">旧式命令行通过改变背景颜色达到调节亮度</a>，<a href="https://blog.csdn.net/u014605728/article/details/50401677" target="_blank" rel="external">通过xgamma调节</a>，<a href="http://blog.sina.com.cn/s/blog_a48621570102x2ac.html" target="_blank" rel="external">通过Redshift调节</a>……实际上都并不能很好地解决CentOS的亮度调节问题（效果几乎看不出来，或者是压根没起作用），CentOS还是那样一个比较保守的系统呀，2233。<br>&emsp;&emsp;说到这里，其实，很遗憾，笔者也没实际地解决该问题，但如之前所说，这只是尝试性地提供一些思路，毕竟网上安装Linux碰见类似的问题还是蛮多的，而相关的解决措施又千篇一律，emmm……这里就不吐槽了，可惜目前笔者在CentOS 7上的对shadowsocks客户端的处理还没成功，没办法连上自己的服务端，碍于用手机查或者换系统查麻烦就暂时没想要继续查下去，不然还是想翻翻，接着做到之前第一种方法所能达到的效果，达到脚本控制来在CentOS内完成操作亮度。不过，这篇文章也会慢慢更新，之后对操作系统和linux有了更深层次的理解后，会重新更新这篇文章，才疏学浅，还请见谅。</p>
+<p><hr><br>&emsp;&emsp;接下来说明一下关于本文涉及的内容，我需要对引用的的内容（包括思想，方法等）对这些朋友表示感谢，也请看官保持平和的心态，并对这些“隐藏的作者”表示尊重。再次郑重说明，本文引用到的内容，绝无恶意，本文观点仅提供思路，个人观点比重大，不保证完美解决，还望理解！由于是个人的文章，希望看官不要随意转载至您任何将要发表的文章中，或者征求笔者同意，引用的内容还请标明出处，还望理解。另外希望看官在遇到各个情况的时候不要心慌，灵活百度，笔者写的不一定对，也请您尽量抱以怀疑的心态去看待，感谢！<br>&emsp;&emsp;最后，文中所参考的内容有：<br><br>&emsp;&emsp;<a href="http://tieba.baidu.com/p/2741231799?red_tag=k0996231110" target="_blank" rel="external">ubuntu吧对于屏幕亮度调节的讨论</a><br>&emsp;&emsp;<a href="https://blog.csdn.net/yu132563/article/details/76567265" target="_blank" rel="external">Innerpeace_yu的CSDN博客</a><br>&emsp;&emsp;<a href="http://www.isvee.com/archives/1207" target="_blank" rel="external">三月有晴天的博客</a><br>&emsp;&emsp;<a href="https://zhidao.baidu.com/question/1669601963041292267.html" target="_blank" rel="external">百度知道中对于旧式命令调节亮度的方法</a><br>&emsp;&emsp;<a href="https://blog.csdn.net/u014605728/article/details/50401677" target="_blank" rel="external">沉沦风帆的CSDN博客</a><br>&emsp;&emsp;<a href="http://blog.sina.com.cn/s/blog_a48621570102x2ac.html" target="_blank" rel="external">金水成流的博客</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/02/Win10-CentOS-双系统/" rel="prev" title="Win10+CentOS 双系统">
+                Win10+CentOS 双系统 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/hexo_zanshi.png"
+                alt="nokehubert" />
+            
+              <p class="site-author-name" itemprop="name">nokehubert</p>
+              <p class="site-description motion-element" itemprop="description">未来总是一张白纸，只有自己的意志，才能在上面刻下足迹</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">nokehubert</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("WfPDhvWiANkAFt7gnIQ1gDBm-gzGzoHsz", "nV5X8ukN6Nunur7ddHSPfVpJ");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+    <script type="text/javascript" src="/live2d/script.js"></script>
+    <canvas id="live2dcanvas" width="150" height="300" class="live2d"></canvas>
+    <style>
+      #live2dcanvas {
+        position: fixed;
+        right: 0px;
+        z-index: 999;
+        pointer-events: none;
+        bottom: -60px;
+      }
+    </style>
+    <script>loadlive2d("live2dcanvas" ,"/live2d/assets/koharu/koharu.model.json",0.5)</script>
+  
+</body>
+</html>
