@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="LeetCode,c++," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="远い理想郷" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;为跳出周更的坏习，==，结果上一篇发出后隔天就直接写了这道题，因为使用到了，所以又发现了蛮多的坑，包括之前对map的一些误解，估摸着会专门出一篇对map、HashMap、hash_map以及unordered_map的学习笔记吧，因为还是蛮有用到的。">
+<meta name="keywords" content="LeetCode,c++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无重复字符的最长子串">
+<meta property="og:url" content="http://nokehubert.cn/2019/03/13/无重复字符的最长子串/index.html">
+<meta property="og:site_name" content="远い理想郷">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;为跳出周更的坏习，==，结果上一篇发出后隔天就直接写了这道题，因为使用到了，所以又发现了蛮多的坑，包括之前对map的一些误解，估摸着会专门出一篇对map、HashMap、hash_map以及unordered_map的学习笔记吧，因为还是蛮有用到的。">
+<meta property="og:updated_time" content="2019-03-13T13:09:30.078Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="无重复字符的最长子串">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;为跳出周更的坏习，==，结果上一篇发出后隔天就直接写了这道题，因为使用到了，所以又发现了蛮多的坑，包括之前对map的一些误解，估摸着会专门出一篇对map、HashMap、hash_map以及unordered_map的学习笔记吧，因为还是蛮有用到的。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://nokehubert.cn/2019/03/13/无重复字符的最长子串/"/>
+
+
+
+
+
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+  <title>无重复字符的最长子串 | 远い理想郷</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6e41aac2e23b737c04040afce07415cd";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">远い理想郷</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-photos">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            图册
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-music">
+          <a href="/music/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-headphones"></i> <br />
+            
+            音乐
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sai_lm">
+          <a href="/sai-lm/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-paint-brush"></i> <br />
+            
+            画作
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nokehubert.cn/2019/03/13/无重复字符的最长子串/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="nokehubert">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/hexo_zanshi.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="远い理想郷">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">无重复字符的最长子串</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-13T19:36:47+08:00">
+                2019-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/03/13/无重复字符的最长子串/" class="leancloud_visitors" data-flag-title="无重复字符的最长子串">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;为跳出周更的坏习，==，结果上一篇发出后隔天就直接写了这道题，因为使用到了，所以又发现了蛮多的坑，包括之前对map的一些误解，估摸着会专门出一篇对map、HashMap、hash_map以及unordered_map的学习笔记吧，因为还是蛮有用到的。<a id="more"></a></p>
+<p><hr></p>
+<p></p><h3><br>题目：<br>&emsp;&emsp;给定一个字符串，请你找出其中不含有重复字符的最长子串的长度。<br></h3><p></p>
+<p></p><h4><br>示例 1:<p></p>
+<p>输入: “abcabcbb”<br>输出: 3<br>解释: 因为无重复字符的最长子串是 “abc”，所以其长度为 3。</p>
+<p>示例 2:</p>
+<p>输入: “bbbbb”<br>输出: 1<br>解释: 因为无重复字符的最长子串是 “b”，所以其长度为 1。</p>
+<p>示例 3:</p>
+<p>输入: “pwwkew”<br>输出: 3<br>解释: 因为无重复字符的最长子串是 “wke”，所以其长度为 3。<br>     请注意，你的答案必须是 子串 的长度，”pwke” 是一个子序列，不是子串。<br></p></h4><br><strong>难度:中等</strong><br>分析：这道题其实乍一眼看下下去就不会很难的那种，就是你所设计的程序执行的快慢而已。最直观的就是一边一次遍历这个字符串然后根据拿到的字符构建“不重复且连续”字符串，在获取新字符串中也同时进行对子串的遍历查找，若是不巧碰见了使条件失效的字符，那就打翻 这个子串重新以下一个预定的节点开始构建子串，直至队尾，这便是暴力破解法的想法，但其实归根结底也是找子串的这样一个过程，包括后面较优的算法也是这样，只是确认处理重复字符以及新建子串的方式不同而已，下面详述：<p></p>
+<h5 id="解法一：暴力破解法"><a href="#解法一：暴力破解法" class="headerlink" title="解法一：暴力破解法"></a>解法一：暴力破解法</h5><p>&emsp;&emsp;先以官方的暴力法为例，官方题解中先考虑到了子串在原字符串中是怎么规划的，定义i为子串的头，j（实际上为j-1）为子串的尾，根据数组的特点j-i即为目前子串的长度。在ij双循环遍历的条件下再利用一个判别函数allUnique来鉴定子串中是否已经含有将要加入的下一个字符，代码思路其实很清晰。<br>&emsp;&emsp;这个方法首先要在i上遍历一遍字符串的长度也就是O(j−i)，对给定的i，j进行滚动时又是一个O(n-i-1)数量级的复杂度，最后在内层利用判别函数的时候也是一个近似O(n)量级的复杂度，最终算法时间复杂度为O(n<sup>3</sup>)。空间复杂度，O(min(n,m))，我们需要O(k)的空间来检查子字符串中是否有重复字符，其中k表示 Set 的大小。而 Set的大小取决于字符串n的大小以及字符集/字母m 的大小。详细推导请参见力扣题库官方说明，因为实在不好也在页面上表达出来。<br>c++代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">lengthOfLongestSubstring</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> sLen=s.length();</div><div class="line">        <span class="keyword">int</span> lenMax=<span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sLen;i++)&#123;</div><div class="line">           <span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;=sLen;j++)&#123;</div><div class="line">               <span class="keyword">if</span>(allUnique(s,i,j)) lenMax=max(lenMax,j-i);</div><div class="line">           &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> lenMax;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">allUnique</span><span class="params">(<span class="built_in">string</span> s,<span class="keyword">int</span> start,<span class="keyword">int</span> end)</span></span>&#123;</div><div class="line">        <span class="built_in">unordered_set</span>&lt;<span class="keyword">char</span>&gt; <span class="built_in">set</span>;  </div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=start;i&lt;end;i++)&#123;</div><div class="line">            <span class="keyword">char</span> ch=s[i];</div><div class="line">            <span class="keyword">if</span>(<span class="built_in">set</span>.find(ch)!=<span class="built_in">set</span>.end()) <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">            <span class="built_in">set</span>.insert(ch);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;然而实际上这份代码完全是按官方题解仿制的c++代码，其运行结果在最长的字符串那超出了时间限制，也足体现这份代码的时间复杂度是多困扰人了。<br>&emsp;&emsp;那么再介绍我自己当时碰见这题想到的解法，也属于暴力破解，但起码会比前者略优点，起码能够正常运行下来。<br>c++代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">lengthOfLongestSubstring</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> sLen=s.length();</div><div class="line">        <span class="keyword">int</span> lenMax=<span class="number">0</span>;</div><div class="line">        <span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt; sMap;</div><div class="line">        <span class="keyword">int</span> trick=<span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> lastI=<span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sLen&amp;&amp;lenMax&lt;(sLen-i+sMap.size());i++)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span>(sMap.find(s.substr(i,<span class="number">1</span>))==sMap.end())&#123;</div><div class="line">                <span class="keyword">if</span>(trick==<span class="number">0</span>)&#123;</div><div class="line">                    lastI=i;</div><div class="line">                    trick=<span class="number">1</span>;</div><div class="line">                &#125;</div><div class="line">                sMap.insert(pair&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt;(s.substr(i,<span class="number">1</span>),i));</div><div class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(sMap.size()&gt;lenMax)&#123;</div><div class="line">                lenMax=sMap.size();</div><div class="line">                sMap.clear();</div><div class="line">                trick=<span class="number">0</span>;</div><div class="line">                i=lastI;</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                sMap.clear();</div><div class="line">                trick=<span class="number">0</span>;</div><div class="line">                i=lastI;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//特殊处理最后一次</span></div><div class="line">        <span class="keyword">if</span>(sMap.size()&gt;lenMax)</div><div class="line">            lenMax=sMap.size();</div><div class="line">        <span class="keyword">return</span> lenMax;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;因为已经不是第一次碰见查找了，所以当时第一反应是想到了利用两数之和的<del>“哈希表”</del>map，这里注意了，为什么这段文字看起来那么奇怪呢，因为我只是开玩笑地说出了这句话，c++中map的实现其实是基于红黑树实现的，时间复杂度为O(logn)，而我之前误以为这是基于hash表实现的，这可就误会大了，发完这篇之后我也会相应地纠正之前文章的观点。<br>&emsp;&emsp;接下来大致说明下我这份代码的构思，首先是没有端标记的，利用多设变量的方式我记录了当前所要构建子串的头i的下一个下标，在构建子串的时候直接利用了map来构建，如果有重复元素则先比较子串长度是否大于了记录的最大长度，否则不更新，但map是要清空的，以便后续操作不出问题，以及最后特殊处理是针对某些特殊情况的，比如单空格构成的串，有在意比较是否有意义的判断（即i大于某值后与已经获取的最长长度比较）。</p>
+<h5 id="解法二：滑动窗口法"><a href="#解法二：滑动窗口法" class="headerlink" title="解法二：滑动窗口法"></a>解法二：滑动窗口法</h5><p>&emsp;&emsp;一开始看到这个标题的时候，我还以为是计网呢，然而确实思想上也有很多类似的地方。其实在暴力破解法中之所以会花费大量的时间，主要是在子串在每次出现重复字符之后，我们需要重新开始子串的构建，这花费了大量的时间。实际上我们只要有办法确定出新的字符在子串的位置，一者被包含的该位置往前的子串的子串的长度是小于该子串的，二者我们有办法确保该位置往后到新字符是我们要找的新的不重复的子串片段，就打破了之前完全重建子串的僵局。<br>&emsp;&emsp;当确认查找对象为某个具体出现的字符的时候，很容易就想到使用HashSet作为滑动窗口，我们可以用O(1)的时间来完成对字符是否在当前的子字符串中的检查。<br>&emsp;&emsp;借官方题解的说明，滑动窗口是数组/字符串问题中常用的抽象概念。 窗口通常是在数组/字符串中由开始和结束索引定义的一系列元素的集合，即[i,j)（左闭，右开）。而滑动窗口是可以将两个边界向某一方向“滑动”的窗口。例如，我们将[i,j)向右滑动1个元素，则它将变为[i+1,j+1)（左闭，右开）。而在这个解法的处理中，我们就是通过查找s[j]，判断滑动i还是j的。<br>c++代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">lengthOfLongestSubstring</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> sLen=s.length();</div><div class="line">        <span class="built_in">unordered_set</span>&lt;<span class="keyword">char</span>&gt; <span class="built_in">set</span>;</div><div class="line">        <span class="keyword">int</span> lenMax=<span class="number">0</span>,i=<span class="number">0</span>,j=<span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span>(i&lt;sLen&amp;&amp;j&lt;sLen)&#123;</div><div class="line">            <span class="keyword">if</span>(<span class="built_in">set</span>.find(s[j])==<span class="built_in">set</span>.end())&#123;</div><div class="line">                <span class="built_in">set</span>.insert(s[j++]);</div><div class="line">                lenMax=max(lenMax,j-i);</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                <span class="built_in">set</span>.erase(s[i++]);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> lenMax;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这份在整体的执行上就比较优势了，哪怕是在最糟糕的情况下也就是只有单字符重复出现的子串条件下，该算法达到最大复杂度也就是O(2n)，仍然视作O(n)级别的算法来对待。空间复杂度是与之前的方法相同的，因为同样也是要构建子串的，这里不加赘述。</p>
+<h5 id="解法三：优化滑动窗口法"><a href="#解法三：优化滑动窗口法" class="headerlink" title="解法三：优化滑动窗口法"></a>解法三：优化滑动窗口法</h5><p>&emsp;&emsp;那么说到优化，我们其实又是找之前算法的问题，滑动窗口到底缺漏在哪呢，想一想我们之前是利用set来处理i的变更，因为set是有序的啊，按之前的i一个个往下推就有办法找到已进去set的重复元素的位置了。而我们实际上进行这操作的目的就只是将已进去set的重复元素下一个下标赋给i而已。set只有key当然是做不到的，所以就可以想到利用有value的map是不是可以尝试一下，利用原字符串的每个字符作为key,他们的下标作为value，然后再通过key访问重复元素的value直接得到下标，想起来就很舒服，也就得到了优化的算法。<br>c++代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">lengthOfLongestSubstring</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> sLen=s.length();</div><div class="line">        <span class="keyword">int</span> lenMax=<span class="number">0</span>;</div><div class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">char</span>,<span class="keyword">int</span>&gt; <span class="built_in">map</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>,j=<span class="number">0</span>;j&lt;sLen;j++)&#123;</div><div class="line">            <span class="keyword">if</span>(<span class="built_in">map</span>.find(s[j])!=<span class="built_in">map</span>.end())&#123;</div><div class="line">                i=max(<span class="built_in">map</span>[s[j]],i);</div><div class="line">                <span class="built_in">map</span>.erase(s[j]);</div><div class="line">            &#125;</div><div class="line">            lenMax=max(lenMax,j-i+<span class="number">1</span>);</div><div class="line">            <span class="built_in">map</span>.insert(pair&lt;<span class="keyword">char</span>,<span class="keyword">int</span>&gt;(s[j],j+<span class="number">1</span>));</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> lenMax;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;优化后的算法甚至可以比较确定地只执行n个步骤，也就是O(n)，同样有子串是不能避免的，空间复杂度是一样的。<br>（后续附加针对字符集对滑动窗口进行优化,2019/3/13）</p>
+<p><hr><br>&emsp;&emsp;本文涉及的内容，我需要对引用的的内容（包括思想，方法等）对这些朋友表示感谢，也请看官保持平和的心态，并对这些“隐藏的作者”表示尊重。再次郑重说明，本文引用到的内容，绝无恶意，文章中观点仅提供思路，不保证绝对正确！由于是个人的文章，希望看官不要随意转载以及复制至您任何将要发表的文章中，或者征求笔者同意，引用的内容还请标明出处，还望理解。另外希望看官在遇到各个情况的时候不要心慌，灵活百度，笔者写的不一定对，也请您尽量抱以怀疑的心态去看待，感谢！<br>&emsp;&emsp;最后，文中所参考的内容有：<br>&emsp;&emsp;<a href="https://leetcode-cn.com/" target="_blank" rel="external">力扣中国(官方题解部分)</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/LeetCode/" rel="tag"># LeetCode</a>
+          
+            <a href="/tags/c/" rel="tag"># c++</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/11/两数相加/" rel="prev" title="两数相加">
+                两数相加 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/hexo_zanshi.png"
+                alt="nokehubert" />
+            
+              <p class="site-author-name" itemprop="name">nokehubert</p>
+              <p class="site-description motion-element" itemprop="description">未来总是一张白纸，只有自己的意志，才能在上面刻下足迹</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">题目：  给定一个字符串，请你找出其中不含有重复字符的最长子串的长度。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">示例 1:
+输入: “abcabcbb”输出: 3解释: 因为无重复字符的最长子串是 “abc”，所以其长度为 3。
+示例 2:
+输入: “bbbbb”输出: 1解释: 因为无重复字符的最长子串是 “b”，所以其长度为 1。
+示例 3:
+输入: “pwwkew”输出: 3解释: 因为无重复字符的最长子串是 “wke”，所以其长度为 3。     请注意，你的答案必须是 子串 的长度，”pwke” 是一个子序列，不是子串。</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#解法一：暴力破解法"><span class="nav-number">1.1.1.</span> <span class="nav-text">解法一：暴力破解法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解法二：滑动窗口法"><span class="nav-number">1.1.2.</span> <span class="nav-text">解法二：滑动窗口法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解法三：优化滑动窗口法"><span class="nav-number">1.1.3.</span> <span class="nav-text">解法三：优化滑动窗口法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">nokehubert</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("WfPDhvWiANkAFt7gnIQ1gDBm-gzGzoHsz", "nV5X8ukN6Nunur7ddHSPfVpJ");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+    <script type="text/javascript" src="/live2d/script.js"></script>
+    <canvas id="live2dcanvas" width="150" height="300" class="live2d"></canvas>
+    <style>
+      #live2dcanvas {
+        position: fixed;
+        right: 0px;
+        z-index: 999;
+        pointer-events: none;
+        bottom: -60px;
+      }
+    </style>
+    <script>loadlive2d("live2dcanvas" ,"/live2d/assets/koharu/koharu.model.json",0.5)</script>
+  
+</body>
+</html>
