@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nokehubert.cn/"/>
-  <updated>2019-05-01T05:54:58.934Z</updated>
+  <updated>2019-05-01T09:01:24.324Z</updated>
   <id>http://nokehubert.cn/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>./*.py 运行 python 程序</title>
+    <link href="http://nokehubert.cn/2019/05/01/py-%E8%BF%90%E8%A1%8C-python-%E7%A8%8B%E5%BA%8F/"/>
+    <id>http://nokehubert.cn/2019/05/01/py-运行-python-程序/</id>
+    <published>2019-05-01T08:16:38.000Z</published>
+    <updated>2019-05-01T09:01:24.324Z</updated>
+    
+    <content type="html"><![CDATA[<p>&emsp;&emsp;刚入门，也是慢慢填坑，毕竟想往信息安全那边靠，虽然做不到说看完书就学会，但就当实验做做，权当扩展知识面。这一篇只是为了想像书本一样简洁地敲命令行而记录的。<br><a id="more"></a></p><hr><h2 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h2><p>首先看下正常情况下是不可以直接执行 .py 文件的<br><img src="/photos/bh_1.png"><br>我们就需要两步，但也不能完全做到永续性简便就是了，第一步在要运行的 .py 文件首行加入”#!/usr/bin/python”（具体路径可以看下自己的 python 路径在哪，”#coding=utf-8”有编码需求可以上这个）<br><img src="/photos/bh_2.png"><br>第二步，打开终端，直接用 chmod 命令，如”chmod 755 ./*.py”，更改 .py 文件的运行权限，终端输入”./*.py”发现运行成功<br><img src="/photos/bh_3.png"><br>对比一下不经过处理的运行方式，”python ./*.py”，也许现在看不出什么，但好处就是命令更简洁了，而且对于多次测试 python 程序，只需要一次更改就可以了，嗯，还是有好处的，见仁见智吧<br><img src="/photos/bh_4.png"></p><hr><h2 id="参考申明"><a href="#参考申明" class="headerlink" title="参考申明"></a>参考申明</h2><p>&emsp;&emsp;本文涉及的内容，我需要对引用的的内容（包括思想，方法等）对这些朋友表示感谢，也请看官保持平和的心态，并对这些“隐藏的作者”表示尊重。再次郑重说明，本文引用到的内容，绝无恶意，文章中观点仅提供思路，不保证绝对正确！由于是个人的文章，希望看官不要随意转载以及复制至您任何将要发表的文章中，或者征求笔者同意，引用的内容还请标明出处，还望理解。另外希望看官在遇到各个情况的时候不要心慌，灵活百度，笔者写的不一定对，也请您尽量抱以怀疑的心态去看待，感谢！<br>&emsp;&emsp;最后，文中所参考的内容有：<br>&emsp;&emsp;<a href="https://www.cnblogs.com/lizunicon/p/3509393.html" target="_blank" rel="external">【linux】终端直接执行py文件，不需要python命令</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&amp;emsp;&amp;emsp;刚入门，也是慢慢填坑，毕竟想往信息安全那边靠，虽然做不到说看完书就学会，但就当实验做做，权当扩展知识面。这一篇只是为了想像书本一样简洁地敲命令行而记录的。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="linux" scheme="http://nokehubert.cn/tags/linux/"/>
+    
+      <category term="Black Hat" scheme="http://nokehubert.cn/tags/Black-Hat/"/>
+    
+  </entry>
   
   <entry>
     <title>Z字形变换</title>
@@ -407,26 +429,6 @@
     
     
       <category term="test" scheme="http://nokehubert.cn/tags/test/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>My first post</title>
-    <link href="http://nokehubert.cn/2017/04/28/My-first-post/"/>
-    <id>http://nokehubert.cn/2017/04/28/My-first-post/</id>
-    <published>2017-04-28T13:51:34.000Z</published>
-    <updated>2017-10-14T17:39:49.344Z</updated>
-    
-    <content type="html"><![CDATA[<h5 id="word"><a href="#word" class="headerlink" title="word"></a>word</h5><h4 id="word-1"><a href="#word-1" class="headerlink" title="word"></a>word</h4><h3 id="word-2"><a href="#word-2" class="headerlink" title="word"></a>word</h3><h2 id="word-3"><a href="#word-3" class="headerlink" title="word"></a>word</h2><h1 id="word-4"><a href="#word-4" class="headerlink" title="word"></a>word</h1><a id="more"></a><ol><li>23456</li><li>23456</li><li>23456</li><li>23456</li><li>23456</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h5 id=&quot;word&quot;&gt;&lt;a href=&quot;#word&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h5&gt;&lt;h4 id=&quot;word-1&quot;&gt;&lt;a href=&quot;#word-1&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h4&gt;&lt;h3 id=&quot;word-2&quot;&gt;&lt;a href=&quot;#word-2&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h3&gt;&lt;h2 id=&quot;word-3&quot;&gt;&lt;a href=&quot;#word-3&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h2&gt;&lt;h1 id=&quot;word-4&quot;&gt;&lt;a href=&quot;#word-4&quot; class=&quot;headerlink&quot; title=&quot;word&quot;&gt;&lt;/a&gt;word&lt;/h1&gt;
-    
-    </summary>
-    
-    
-      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
     
   </entry>
   
