@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nokehubert.cn/"/>
-  <updated>2019-05-01T09:01:24.324Z</updated>
+  <updated>2019-05-02T02:31:33.118Z</updated>
   <id>http://nokehubert.cn/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>整数反转</title>
+    <link href="http://nokehubert.cn/2019/05/02/%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/"/>
+    <id>http://nokehubert.cn/2019/05/02/整数反转/</id>
+    <published>2019-05-02T01:48:54.000Z</published>
+    <updated>2019-05-02T02:31:33.118Z</updated>
+    
+    <content type="html"><![CDATA[<p>&emsp;&emsp;这道题是不难的，但编完之后对比一下官方题解，基本思想是一样的，无非是细节处理手段不如人家，说明了自己的思维方面仍旧不足以及不了解库的使用。<br><a id="more"></a></p><hr><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p><strong>给出一个 32 位的有符号整数，你需要将这个整数中每位上的数字进行反转。<br>示例 1:<br>输入: 123<br>输出: 321<br> 示例 2:<br>输入: -123<br>输出: -321<br>示例 3:<br>输入: 120<br>输出: 21<br>注意:<br>假设我们的环境只能存储得下 32 位的有符号整数，则其数值范围为 [−2<sup>31</sup>,  2<sup>31</sup> − 1]。请根据这个假设，如果反转后整数溢出那么就返回 0。</strong></p><font color="Red">难度：简单</font><h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><h3 id="弹出和推入数字-amp-溢出前进行检查"><a href="#弹出和推入数字-amp-溢出前进行检查" class="headerlink" title="弹出和推入数字 &amp; 溢出前进行检查"></a>弹出和推入数字 &amp; 溢出前进行检查</h3><p>分析：<br>&emsp;&emsp;原因如本文前言所述，故只解释基本思想，避免误导。考虑32位有符号整数，INT_MAX=2<sup>31</sup>-1=2147483647，INT_MIN=−2<sup>31</sup>=-2147483648，当构建反转整数时，可以每次审查原数的一位，并构建反转整数的一位，即将原数正在处理的一位取出放入反转整数的最后一位。首先可能会想到的会是压栈出栈的操作，但为达成最节省的空间复杂度，我们不考虑这个，直接用数学的方法来处理，每次用 “x % 10” 来求得处理位，并用 “x =x/10” 获得新的处理数，最初的处理数为原数本身，这样既能取得原数具体位的数字也能保证原数的每位都能被取到。而构建反转整数方面，则注意两点，一构建，每次加入处理位都采用 “y= y*10+x%10”,第二点则是判断溢出，以 INT_MAX 为例，可以看出当 y &gt;= 214748364 可能会溢出，又分出两种情况，一种是大于，这种不用判别下一处理位，因为已经能确定下步操作已经造成溢出，直接返回0即可，等于时，则需要判断下一处理位是否小于等于 7，大于 7 则溢出，同理处理 INT_MIN。</p><p>先展示笔者首次想到的c++代码：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">reverse</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> temp=<span class="number">1</span>;</div><div class="line">        <span class="keyword">int</span> y=<span class="number">0</span>;<span class="comment">//默认0返回</span></div><div class="line">        <span class="keyword">int</span> sign=<span class="number">1</span>;<span class="comment">//符号位</span></div><div class="line">        <span class="keyword">if</span>(x&lt;<span class="number">0</span>)&#123;</div><div class="line">            sign=<span class="number">-1</span>;</div><div class="line">            <span class="keyword">if</span>(x==<span class="number">-2147483648</span>)&#123;<span class="comment">//32位最大负数处理</span></div><div class="line">                x=x+<span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            x=-x;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">while</span>(temp&lt;=x)&#123;</div><div class="line">            <span class="keyword">if</span>(y&lt;<span class="number">214748364</span>||y==<span class="number">214748364</span>&amp;&amp;((x/temp)%<span class="number">10</span>)&lt;=<span class="number">7</span>)&#123;</div><div class="line">                <span class="keyword">if</span>(x==<span class="number">2147483647</span>&amp;&amp;sign==<span class="number">-1</span>&amp;&amp;y==<span class="number">0</span>)&#123;<span class="comment">//32位最大负数处理</span></div><div class="line">                    y=(x/temp)%<span class="number">10</span>+<span class="number">1</span>;</div><div class="line">                &#125;<span class="keyword">else</span>&#123;<span class="comment">//正常情况</span></div><div class="line">                    y=<span class="number">10</span>*y+(x/temp)%<span class="number">10</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;<span class="keyword">else</span>&#123;<span class="comment">//溢出情况</span></div><div class="line">                <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(temp&lt;=<span class="number">100000000</span>)&#123;<span class="comment">//累计值溢出</span></div><div class="line">                temp=temp*<span class="number">10</span>;</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> sign*y;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure><p>再对比一下官方极简高效的解法：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">reverse</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> rev = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span> (x != <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">int</span> pop = x % <span class="number">10</span>;</div><div class="line">            x /= <span class="number">10</span>;</div><div class="line">            <span class="keyword">if</span> (rev &gt; INT_MAX/<span class="number">10</span> || (rev == INT_MAX / <span class="number">10</span> &amp;&amp; pop &gt; <span class="number">7</span>)) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">            <span class="keyword">if</span> (rev &lt; INT_MIN/<span class="number">10</span> || (rev == INT_MIN / <span class="number">10</span> &amp;&amp; pop &lt; <span class="number">-8</span>)) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">            rev = rev * <span class="number">10</span> + pop;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> rev;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p><p><em>（吐槽一下，没有对比没有伤害 ==||）</em></p><hr><h2 id="参考申明"><a href="#参考申明" class="headerlink" title="参考申明"></a>参考申明</h2><p>&emsp;&emsp;本文涉及的内容，我需要对引用的的内容（包括思想，方法等）对这些朋友表示感谢，也请看官保持平和的心态，并对这些“隐藏的作者”表示尊重。再次郑重说明，本文引用到的内容，绝无恶意，文章中观点仅提供思路，不保证绝对正确！由于是个人的文章，希望看官不要随意转载以及复制至您任何将要发表的文章中，或者征求笔者同意，引用的内容还请标明出处，还望理解。另外希望看官在遇到各个情况的时候不要心慌，灵活百度，笔者写的不一定对，也请您尽量抱以怀疑的心态去看待，感谢！<br>&emsp;&emsp;最后，文中所参考的内容有：<br>&emsp;&emsp;<a href="https://leetcode-cn.com/" target="_blank" rel="external">力扣中国(官方题解部分)</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&amp;emsp;&amp;emsp;这道题是不难的，但编完之后对比一下官方题解，基本思想是一样的，无非是细节处理手段不如人家，说明了自己的思维方面仍旧不足以及不了解库的使用。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="LeetCode" scheme="http://nokehubert.cn/tags/LeetCode/"/>
+    
+      <category term="c++" scheme="http://nokehubert.cn/tags/c/"/>
+    
+  </entry>
   
   <entry>
     <title>./*.py 运行 python 程序</title>
@@ -406,29 +428,6 @@
     
     
       <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Say yes</title>
-    <link href="http://nokehubert.cn/2017/10/05/Say-yes/"/>
-    <id>http://nokehubert.cn/2017/10/05/Say-yes/</id>
-    <published>2017-10-05T15:54:25.000Z</published>
-    <updated>2017-10-13T16:42:57.492Z</updated>
-    
-    <content type="html"><![CDATA[<p>This is my first time to finish my blog,and it means I will continue to do my best.<br>So, looking at me ,I will be more strong!<br>Good night!</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;This is my first time to finish my blog,and it means I will continue to do my best.&lt;br&gt;So, looking at me ,I will be more strong!&lt;br&gt;Good 
-      
-    
-    </summary>
-    
-    
-      <category term="test" scheme="http://nokehubert.cn/tags/test/"/>
     
   </entry>
   
