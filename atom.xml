@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nokehubert.cn/"/>
-  <updated>2019-05-02T02:31:33.118Z</updated>
+  <updated>2019-08-07T08:46:14.462Z</updated>
   <id>http://nokehubert.cn/</id>
   
   <author>
@@ -15,6 +15,56 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>回文数 &amp;&amp; 盛最多水的容器</title>
+    <link href="http://nokehubert.cn/2019/08/07/%E5%9B%9E%E6%96%87%E6%95%B0-%E7%9B%9B%E6%9C%80%E5%A4%9A%E6%B0%B4%E7%9A%84%E5%AE%B9%E5%99%A8/"/>
+    <id>http://nokehubert.cn/2019/08/07/回文数-盛最多水的容器/</id>
+    <published>2019-08-07T06:32:20.000Z</published>
+    <updated>2019-08-07T08:46:14.462Z</updated>
+    
+    <content type="html"><![CDATA[<p>&emsp;&emsp;其实一直是在考虑到底有没有必要专门写算法的博客的，因为大部分也是leetcode上面的题解（苦涩地笑着说暴力法我还是自己写的），等于是我自己身为要解释给别人听的角色将解法重新复述一遍而已。算法其实真的蛮重要的，秋招前几天的笔试（网易、大疆）已经够让我吃瘪了，虽然可能来不及，但我也想要在这两个月尽量做好点吧，所以就想着强迫自己写一些总结性的东西，博客也就重新开始更新了。<a id="more"></a></p><hr><h2 id="回文数"><a href="#回文数" class="headerlink" title="回文数"></a>回文数</h2><p><strong>判断一个整数是否是回文数。回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。<br>示例 1:<br>输入: 121<br>输出: true<br>示例 2:<br>输入: -121<br>输出: false<br>解释: 从左向右读, 为 -121 。 从右向左读, 为 121- 。因此它不是一个回文数。<br>示例 3:<br>输入: 10<br>输出: false<br>解释: 从右向左读, 为 01 。因此它不是一个回文数。</strong></p><font color="Red">难度：简单</font><h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><h4 id="暴力法"><a href="#暴力法" class="headerlink" title="暴力法"></a>暴力法</h4><p>分析：<br>&emsp;&emsp;很容易想到，说起回文，就会联想到字符串，那就采用将数字转化为字符串，再将获得的字符串或者字符数组进行倒置，最后比较如此建立的正常序字符串与倒置字符串即可。转化为字符串处理的回文数就没有溢出的情况，另外对于负数情况可以直接剔除。</p><p>下面展示java代码：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">        Boolean result =<span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span>(x&gt;<span class="number">0</span>)&#123;</div><div class="line">             <span class="comment">//整型转字符串，获取原数字</span></div><div class="line">            String norstr=String.valueOf(x); </div><div class="line">            StringBuffer tempstr=<span class="keyword">new</span> StringBuffer();</div><div class="line">            <span class="keyword">int</span> len=norstr.length();</div><div class="line">            <span class="comment">//倒置</span></div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=len-<span class="number">1</span>;i&gt;=<span class="number">0</span>;i--)&#123;</div><div class="line">                tempstr.append(norstr.substring(i,i+<span class="number">1</span>));</div><div class="line">            &#125;</div><div class="line">            <span class="comment">//System.out.println("tempstr is "+tempstr);</span></div><div class="line">            <span class="comment">//获取结果</span></div><div class="line">            result=norstr.equals(tempstr.toString());</div><div class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(x==<span class="number">0</span>)&#123;</div><div class="line">             result=<span class="keyword">true</span>;</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure><p>&emsp;&emsp;时间复杂度的话，若以n位数来计量的话，倒置原序字符串需要遍历一遍各位，时间复杂度 O(n)，空间复杂度方面则是因为要存储原序字符串和倒置字符串，空间复杂度为 O(n)。</p><h4 id="反转一半数字"><a href="#反转一半数字" class="headerlink" title="反转一半数字"></a>反转一半数字</h4><p>分析：<br>&emsp;&emsp;虽然现在已经跨越过了大一看见回文串都得好好想的阶段，但看到这个解法的时候还是觉得它是蛮有意思的，果然深入学习还是能让人发现一些小题的亮点的。避开之前将数字转化为字符串，一者时间复杂度较高，没有必要，二者消耗的内存空间不恒定，浪费，直接将原数按数字进行处理。<br>&emsp;&emsp;仔细观察，可以发现每次想取出原数的低位都需要一个合适次数的 /10 操作将之转化为某个数的个位，再进行%10 取余,而将数字完整倒置后，此位又将放置在 总位数-合适次数 对应数字的位上，如整数 12，2=12%10，1=(12/10<sup>1</sup>)%10，21=2&times;10<sup>1</sup>+1，也就可以看出它其实是个累乘累加的过程，每次 %10 取一位，将前面获得的结果乘10，加上取出来的这一位数，并将原数除10，这样保证每次取得的数都是新数个位。<br>&emsp;&emsp;获得这个过程的认知之后，再考虑倒置的情况，负数不需要倒置，直接out,个位为0在此处容易判断，若在这样的情况下最高位不为0，即此数不为0，out。那有必要取得全部位数的倒置吗？也没有必要，而且还会有溢出（integer.MAX_VALUE）的问题，所以只取一半（低位）倒置即可，比较时与原数字的高位数字比较，同时比较到了高低两部分，又避免了溢出。而在具体情况中，数字的位数可能为奇数也可能为偶数，但只要取获得的倒置数/10与原数高位部分相等或者倒置数与原数高位部分相等即可，也由此可以获得循环条件。</p><p>下面展示java代码：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">        Boolean result =<span class="keyword">false</span>;</div><div class="line">        <span class="comment">//官方题解 java版</span></div><div class="line">        <span class="comment">//取数一半位数，进行回文比较求解</span></div><div class="line">        <span class="keyword">if</span>(x&lt;<span class="number">0</span>||x%<span class="number">10</span>==<span class="number">0</span> &amp;&amp; x!=<span class="number">0</span>)&#123;</div><div class="line">            <span class="comment">//负数不可能回文</span></div><div class="line">            <span class="comment">//个位上为0且本数不是0的情况</span></div><div class="line">            <span class="keyword">return</span> result;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//倒置数</span></div><div class="line">        <span class="keyword">int</span> rev_x=<span class="number">0</span>;</div><div class="line">        <span class="comment">//x的低位向高位倒置，且每次取x的次低位</span></div><div class="line">        <span class="keyword">while</span>(x&gt;rev_x)&#123;</div><div class="line">            rev_x=rev_x*<span class="number">10</span>+x%<span class="number">10</span>;</div><div class="line">            x=x/<span class="number">10</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//位数为奇数以及位数为偶数</span></div><div class="line">        result=(x==rev_x)||(x==rev_x/<span class="number">10</span>);</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure><p>&emsp;&emsp;每次迭代将原数 /10 ,因此时间复杂度为 O(log<sub>10</sub>n)，消耗为常数值，故空间复杂度O(1);</p><hr><h2 id="盛最多水的容器"><a href="#盛最多水的容器" class="headerlink" title="盛最多水的容器"></a>盛最多水的容器</h2><p><strong>给定 n 个非负整数 a1，a2，…，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, ai) 和 (i, 0)。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。<br>说明：你不能倾斜容器，且 n 的值至少为 2</strong><br><img src="/photos/question_11.jpg" alt="盛水最多的容器 图" title="图片来源于 LeetCode"><br><strong>图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,7]。在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。</strong></p><font color="Red">难度：中等</font><h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><h4 id="暴力法-1"><a href="#暴力法-1" class="headerlink" title="暴力法"></a>暴力法</h4><p>分析：<br>&emsp;&emsp;这题目的暴力法，呃，真的蛮容易想到的，就是两重for循环，滚一遍数组，这里说下偶然看到的评论区有人说超时的情况吧，其实我就多想了一点，因为每次滚动左边的基准节点都是往后挪动的，而右侧节点势必不能在基准节点的左侧（不然就会重复算，比如1-3、3-1），所以哪怕是暴力法，也要排除掉这些没有必要的计算，在内置循环设置好循环条件，保证右侧节点大于左侧节点（基准节点）即可。</p><p>下面展示java代码：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxArea</span><span class="params">(<span class="keyword">int</span>[] height)</span> </span>&#123;</div><div class="line">        <span class="comment">//暴力法</span></div><div class="line">        <span class="keyword">int</span> len=height.length;</div><div class="line">        </div><div class="line">        <span class="keyword">int</span> area=<span class="number">0</span>,h=<span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;len;i++)&#123;</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=len-<span class="number">1</span>;j&gt;i;j--)&#123;</div><div class="line">                h=height[i]&gt;height[j]?height[j]:height[i];</div><div class="line">                </div><div class="line">                <span class="keyword">if</span>((j-i)*h&gt;area)&#123;</div><div class="line">                    area=(j-i)*h;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> area;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure><p>&emsp;&emsp;因为两重for循环，虽然内循环省略了某些情况导致可以不用n全长跑，但就时间复杂度而言还是O(n<sup>2</sup>)，空间复杂度的话常量的消耗,O(1)。</p><h4 id="双指针法"><a href="#双指针法" class="headerlink" title="双指针法"></a>双指针法</h4><p>分析：<br>&emsp;&emsp;初始左右两指针，左指针指向数组初始点，右指针指向数组末尾，其中必有某个指针小于等于某指针，分析情况，要么右指针往前推，要么左指针往后推，对于代表高度较大的那个指针而言，挪动指针不能代表什么含义，因为你可能取得到更小值，这样就无法保证现有的情况里有个较大的高度，而挪动较小的指针的话，则更有机会获得更大的高度，虽然两种行动都会导致宽度下降，但后者至少可以保证过最大的高度最后会被保留在左右指针指向的值中。而在每次实际指针的挪动中，双指针法实际上是计算一次，省略 n-(k+1)-1次，k为迭代次数，仔细推算可以推导出，只有计算过的面积以及可证明小于某个计算过的面积的情况会被消去，具体可参见LeetCode 题解区 双指针法正确性说明。</p><p>下面展示java代码：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxArea</span><span class="params">(<span class="keyword">int</span>[] height)</span> </span>&#123;</div><div class="line">        <span class="comment">//双指针法</span></div><div class="line">        <span class="comment">//双指针，指向首尾，每次挪动一次，往值小的移动（这样才有变大的可能）</span></div><div class="line">        <span class="comment">//每次计算一次值，跳过n-(k+1)-1次计算</span></div><div class="line">        <span class="keyword">int</span> l=<span class="number">0</span>,r=height.length-<span class="number">1</span>;</div><div class="line">        <span class="keyword">int</span> area=<span class="number">0</span>;</div><div class="line">        </div><div class="line">        <span class="keyword">while</span>(r&gt;l)&#123;</div><div class="line">            area=Math.max(area,Math.min(height[l],height[r])*(r-l));</div><div class="line">            <span class="comment">//移动高度低的指针</span></div><div class="line">            <span class="keyword">if</span>(height[l]&gt;height[r])&#123;</div><div class="line">                r--;</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                l++;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> area;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure><p>&emsp;&emsp;实际上只扫描了整个数组一次，所以时间复杂度为 O(n)，空间复杂度方面，仍使用恒定的空间，复杂度为 O(1)。</p><hr><h2 id="参考申明"><a href="#参考申明" class="headerlink" title="参考申明"></a>参考申明</h2><p>&emsp;&emsp;本文涉及的内容，我需要对引用的的内容（包括思想，方法等）对这些朋友表示感谢，也请看官保持平和的心态，并对这些“隐藏的作者”表示尊重。再次郑重说明，本文引用到的内容，绝无恶意，文章中观点仅提供思路，不保证绝对正确！由于是个人的文章，希望看官不要随意转载以及复制至您任何将要发表的文章中，或者征求笔者同意，引用的内容还请标明出处，还望理解。另外希望看官在遇到各个情况的时候不要心慌，灵活百度，笔者写的不一定对，也请您尽量抱以怀疑的心态去看待，感谢！<br>&emsp;&emsp;最后，文中所参考的内容有：<br>&emsp;&emsp;<a href="https://leetcode-cn.com/" target="_blank" rel="external">力扣中国(官方题解部分)</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&amp;emsp;&amp;emsp;其实一直是在考虑到底有没有必要专门写算法的博客的，因为大部分也是leetcode上面的题解（苦涩地笑着说暴力法我还是自己写的），等于是我自己身为要解释给别人听的角色将解法重新复述一遍而已。算法其实真的蛮重要的，秋招前几天的笔试（网易、大疆）已经够让我吃瘪了，虽然可能来不及，但我也想要在这两个月尽量做好点吧，所以就想着强迫自己写一些总结性的东西，博客也就重新开始更新了。
+    
+    </summary>
+    
+    
+      <category term="LeetCode" scheme="http://nokehubert.cn/tags/LeetCode/"/>
+    
+      <category term="java" scheme="http://nokehubert.cn/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2020秋招 笔试篇（一）</title>
+    <link href="http://nokehubert.cn/2019/08/07/2020%E7%A7%8B%E6%8B%9B-%E7%AC%94%E8%AF%95%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+    <id>http://nokehubert.cn/2019/08/07/2020秋招-笔试篇（一）/</id>
+    <published>2019-08-07T06:29:27.000Z</published>
+    <updated>2019-08-07T06:29:27.155Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>2020秋招 java基础篇</title>
+    <link href="http://nokehubert.cn/2019/08/07/2020%E7%A7%8B%E6%8B%9B-java%E5%9F%BA%E7%A1%80%E7%AF%87/"/>
+    <id>http://nokehubert.cn/2019/08/07/2020秋招-java基础篇/</id>
+    <published>2019-08-07T06:27:44.000Z</published>
+    <updated>2019-08-07T06:27:44.188Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>整数反转</title>
@@ -368,66 +418,6 @@
     
     
       <category term="hexo" scheme="http://nokehubert.cn/tags/hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>The theme and click&#39;s setting</title>
-    <link href="http://nokehubert.cn/2017/10/08/The-theme-and-click-s-setting/"/>
-    <id>http://nokehubert.cn/2017/10/08/The-theme-and-click-s-setting/</id>
-    <published>2017-10-08T08:25:42.000Z</published>
-    <updated>2017-10-14T17:41:20.575Z</updated>
-    
-    <content type="html"><![CDATA[<p>Look!My new theme!Aha,I feel very happy when I looked my website being showed in my view.Though it is no perfect,it also let me can’t help jumpping up.Em……This is it.<br>It must be true that the study is so interesting!<br><a id="more"></a><br>I use the next to finish  my theme’s reseting,and its official description is very exhaustive.After reading it,I learn many and I chose the row version which is mostly suit to me.<br>Maybe you haven’t noticed it yet,the reading number has been showed in this interface,though maybe no many people pay attention my little website.<br>What’s more,I find a small plug-in unit which is so cute.You are right,it is anime style.I feel so excited!Thanks for the help from a blogger,I have put this pendant in my website now.Oh!<br>This day is also fantastic!</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Look!My new theme!Aha,I feel very happy when I looked my website being showed in my view.Though it is no perfect,it also let me can’t help jumpping up.Em……This is it.&lt;br&gt;It must be true that the study is so interesting!&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Xshell and WDCP</title>
-    <link href="http://nokehubert.cn/2017/10/07/Xshell-and-WDCP/"/>
-    <id>http://nokehubert.cn/2017/10/07/Xshell-and-WDCP/</id>
-    <published>2017-10-07T07:58:53.000Z</published>
-    <updated>2017-10-14T17:40:32.156Z</updated>
-    
-    <content type="html"><![CDATA[<p>This day’s works cost me 3 hours,and it almostly be cost in the installation of the program.<br>It is the first time I try to connect to my new server,needless to say,I get the feeling of freshness.Xshell is easy to install,and it also uses Chinese which gives me much time to study how to use the software.After inputing my messages of my server,I connect to my server succeessfully,I fell happy though  the software interface only give me the color of dark.<br><a id="more"></a><br>Because the server uses the linux system I use the two ways to finish this operation of installation of WDCP that one succeed but other failed.The source code insatallaion give me the feeling of fussy,but I finish it finally.<br>This day I still try to do something,em,I hope I will not give up.</p><h5 id="2017-10-7"><a href="#2017-10-7" class="headerlink" title="2017 10 7"></a>2017 10 7</h5><h4 id="2017-10-7-1"><a href="#2017-10-7-1" class="headerlink" title="2017 10 7"></a>2017 10 7</h4><h3 id="2017-10-7-2"><a href="#2017-10-7-2" class="headerlink" title="2017 10 7"></a>2017 10 7</h3><h2 id="2017-10-7-3"><a href="#2017-10-7-3" class="headerlink" title="2017 10 7"></a>2017 10 7</h2><h1 id="2017-10-7-4"><a href="#2017-10-7-4" class="headerlink" title="2017 10 7"></a>2017 10 7</h1>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;This day’s works cost me 3 hours,and it almostly be cost in the installation of the program.&lt;br&gt;It is the first time I try to connect to my new server,needless to say,I get the feeling of freshness.Xshell is easy to install,and it also uses Chinese which gives me much time to study how to use the software.After inputing my messages of my server,I connect to my server succeessfully,I fell happy though  the software interface only give me the color of dark.&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>This plugin</title>
-    <link href="http://nokehubert.cn/2017/10/06/This-plugin/"/>
-    <id>http://nokehubert.cn/2017/10/06/This-plugin/</id>
-    <published>2017-10-06T01:46:49.000Z</published>
-    <updated>2017-10-14T17:40:15.091Z</updated>
-    
-    <content type="html"><![CDATA[<p>As a student who don’t has so much knowledge,I contact with the design of blog,and I know this must be a good choice for my futural life.<br>Whoever have the skills of designing who I want to be.Oh,my English is so bad which feeling likes Chinglish.<br><a id="more"></a><br>This day I also try,and I find a software which named sublime and a plugin which named livereload.They help me fall in love with the design of blog more quickily.<br>I will do more,I will be better.<br>And I am sure,I will be.</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;As a student who don’t has so much knowledge,I contact with the design of blog,and I know this must be a good choice for my futural life.&lt;br&gt;Whoever have the skills of designing who I want to be.Oh,my English is so bad which feeling likes Chinglish.&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="record" scheme="http://nokehubert.cn/tags/record/"/>
     
   </entry>
   
